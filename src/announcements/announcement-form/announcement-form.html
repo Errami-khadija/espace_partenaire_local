@@ -1,0 +1,217 @@
+@if (!showPreview) {
+  
+<div class="form-side">
+  <form 
+    [formGroup]="announcementForm" 
+    (ngSubmit)="submit()">
+
+    <div class="form-grid">
+      
+      <!-- LEFT SIDE -->
+      <div class="form-column-left">
+        
+        <div class="form-group">
+          <label>Type d'annonce</label>
+          <select formControlName="announcementType">
+            <option value="">-- Sélectionner --</option>
+            <option value="investment">Investissement</option>
+            <option value="collaboration">Collaboration</option>
+            <option value="tourism">Tourisme</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Titre</label>
+          <input type="text" formControlName="title">
+          @if (
+            announcementForm.get('title')?.invalid &&
+            announcementForm.get('title')?.touched
+          ) {
+            @if (announcementForm.get('title')?.errors?.['required']) {
+              <small>Le titre est obligatoire.</small>
+            }
+            @if (announcementForm.get('title')?.errors?.['minlength']) {
+              <small>Minimum 3 caractères.</small>
+            }
+          }
+        </div>
+
+        <div class="form-group">
+          <label>Description</label>
+          <textarea formControlName="description"></textarea>
+          @if (
+            announcementForm.get('description')?.invalid &&
+            announcementForm.get('description')?.touched
+          ) {
+            @if (announcementForm.get('description')?.errors?.['required']) {
+              <small>Description obligatoire.</small>
+            }
+            @if (announcementForm.get('description')?.errors?.['minlength']) {
+              <small>Minimum 10 caractères.</small>
+            }
+          }
+        </div>
+
+        <div class="form-group">
+          <label>Secteur</label>
+          <input type="text" formControlName="sector">
+          @if (
+            announcementForm.get('sector')?.invalid &&
+            announcementForm.get('sector')?.touched
+          ) {
+            <small>Le secteur est obligatoire.</small>
+          }
+        </div>
+
+        <!-- Dynamic fields for LEFT side -->
+        @if (selectedType === 'investment') {
+          <div class="form-group">
+            <label>Montant recherché</label>
+            <input type="text" formControlName="investmentAmount">
+          </div>
+
+          <div class="form-group">
+            <label>Type d'investissement</label>
+            <input type="text" formControlName="investmentType">
+          </div>
+        }
+
+        @if (selectedType === 'collaboration') {
+          <div class="form-group">
+            <label>Type de partenaire</label>
+            <input type="text" formControlName="partnerType">
+          </div>
+
+          <div class="form-group">
+            <label>Objectif de collaboration</label>
+            <input type="text" formControlName="collaborationGoal">
+          </div>
+        }
+
+        @if (selectedType === 'tourism') {
+          <div class="form-group">
+            <label>Destination</label>
+            <input type="text" formControlName="destination">
+          </div>
+
+          <div class="form-group">
+            <label>Type d'activité</label>
+            <input type="text" formControlName="activityType">
+          </div>
+        }
+
+      </div>
+
+      <!-- RIGHT SIDE -->
+      <div class="form-column-right">
+        
+        <div class="form-group">
+          <label>Région</label>
+          <input type="text" formControlName="region">
+          @if (
+            announcementForm.get('region')?.invalid &&
+            announcementForm.get('region')?.touched
+          ) {
+            <small>La région est obligatoire.</small>
+          }
+        </div>
+
+        <div class="form-group">
+          <label>Contact</label>
+          <input type="text" formControlName="contact">
+          @if (
+            announcementForm.get('contact')?.invalid &&
+            announcementForm.get('contact')?.touched
+          ) {
+            @if (announcementForm.get('contact')?.errors?.['required']) {
+              <small>Le contact est obligatoire.</small>
+            }
+            @if (announcementForm.get('contact')?.errors?.['pattern']) {
+              <small>Numéro invalide (10 chiffres).</small>
+            }
+          }
+        </div>
+
+        <div class="form-group">
+          <label>Pièces jointes</label>
+          <input 
+            type="file"
+            multiple
+            (change)="onFileSelected($event)"
+          >
+
+          @if (selectedFiles.length > 0) {
+            <h3>Aperçu des fichiers</h3>
+
+            @for (file of selectedFiles; track file.name) {
+              <div class="file-preview-item">
+                <p>{{ file.name }}</p>
+
+                @if(file.type.startsWith('image')) {
+                  <img 
+                    [src]="getFilePreview(file)"
+                    width="150">
+                }
+
+                @if(file.type === 'application/pdf') {
+                  <iframe
+                    [src]="getFilePreview(file)"
+                    width="100%"
+                    height="300">
+                  </iframe>
+                }
+              </div>
+            }
+          }
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- BUTTONS -->
+    <div class="form-actions">
+    
+      <button type="button" class="btn-preview" (click)="showFormPreview()">
+        Aperçu
+      </button>
+    </div>
+
+  </form>
+</div>
+
+}
+
+@if (showPreview) {
+<div class="preview-side">
+  <h2>Aperçu de l'annonce</h2>
+
+  <p><strong>Type :</strong> {{ announcementForm.value.announcementType }}</p>
+  <p><strong>Titre :</strong> {{ announcementForm.value.title }}</p>
+  <p><strong>Description :</strong> {{ announcementForm.value.description }}</p>
+  <p><strong>Secteur :</strong> {{ announcementForm.value.sector }}</p>
+  <p><strong>Région :</strong> {{ announcementForm.value.region }}</p>
+  <p><strong>Contact :</strong> {{ announcementForm.value.contact }}</p>
+
+  <h3>Pièces jointes</h3>
+
+  @if (selectedFiles.length > 0) {
+    <ul>
+      @for (file of selectedFiles; track file.name) {
+        <li>{{ file.name }}</li>
+      }
+    </ul>
+  } @else {
+    <p>Aucune pièce jointe.</p>
+  }
+
+  <div class="preview-actions">
+    <button type="button" (click)="editForm()">
+      Modifier
+    </button>
+    <button type="button" (click)="submit()">
+      Soumettre
+    </button>
+  </div>
+</div>
+}

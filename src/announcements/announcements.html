@@ -1,1 +1,36 @@
-<p>announcements works!</p>
+<div class="page-header">
+
+    <h2>Mes annonces</h2>
+
+    <button class="add-announcement-btn" (click)="openForm()">
+    <span class="icon">+</span>
+        Ajouter une annonce
+    </button>
+   
+
+</div>
+<h1>here will be the list (table)of announcements</h1>
+
+@if(showForm){
+
+<div class="modal-backdrop">
+
+    <div class="announcement-modal">
+
+        <button
+            class="close-btn"
+            (click)="closeForm()">
+
+            ✕
+
+        </button>
+
+        <app-announcement-form
+  (close)="closeForm()">
+</app-announcement-form>
+
+    </div>
+
+</div>
+
+}
