@@ -1,0 +1,37 @@
+.app-header {
+  width: 100%;
+  padding: 0;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: #ffffff;
+  border: none;
+  border-radius: 0;
+  padding: 18px 24px;
+  box-shadow: none;
+}
+
+.header-title-block {
+  display: flex;
+  flex-direction: column;
+}
+
+.header-label {
+  margin: 0 0 4px;
+  color: #64748b;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.header-content h1 {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #0f172a;
+}
