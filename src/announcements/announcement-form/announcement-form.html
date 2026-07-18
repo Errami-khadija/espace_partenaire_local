@@ -68,35 +68,114 @@
           <div class="form-group">
             <label>Montant recherché</label>
             <input type="text" formControlName="investmentAmount">
+             @if (
+            announcementForm.get('investmentAmount')?.invalid &&
+            announcementForm.get('investmentAmount')?.touched
+          ) {
+            @if (announcementForm.get('investmentAmount')?.errors?.['required']) {
+              <small>Le montant recherché est obligatoire.</small>
+            }
+            @if (announcementForm.get('investmentAmount')?.errors?.['pattern']) {
+              <small>Format invalide.</small>
+            }
+          }
           </div>
+          
 
-          <div class="form-group">
-            <label>Type d'investissement</label>
-            <input type="text" formControlName="investmentType">
+           <div class="form-group">
+            <label>ROE estimé</label>
+            <input type="text" formControlName="estimatedROI">
+             @if (
+            announcementForm.get('estimatedROI')?.invalid &&
+            announcementForm.get('estimatedROI')?.touched
+          ) {
+            @if (announcementForm.get('estimatedROI')?.errors?.['required']) {
+              <small>Le ROE estimé est obligatoire.</small>
+            }
+            @if (announcementForm.get('estimatedROI')?.errors?.['pattern']) {
+              <small>Format invalide.</small>
+            }
+          }
+          </div>
+           <div class="form-group">
+            <label>Durée du projet</label>
+            <input type="text" formControlName="projectDuration">
+             @if (
+            announcementForm.get('projectDuration')?.invalid &&
+            announcementForm.get('projectDuration')?.touched
+          ) {
+            @if (announcementForm.get('projectDuration')?.errors?.['required']) {
+              <small>La durée du projet est obligatoire.</small>
+            }
+          }
           </div>
         }
 
         @if (selectedType === 'collaboration') {
           <div class="form-group">
-            <label>Type de partenaire</label>
-            <input type="text" formControlName="partnerType">
+            <label>Type de collaboration</label>
+          <select class="form-group" formControlName="collaborationType">
+             <option>Partenariat</option>
+             <option>Prestataire</option>
+             <option>Co-investissement</option>
+          </select>
+           @if (
+            announcementForm.get('collaborationType')?.invalid &&
+            announcementForm.get('collaborationType')?.touched
+          ) {
+            @if (announcementForm.get('collaborationType')?.errors?.['required']) {
+              <small>Le type de collaboration est obligatoire.</small>
+            }
+          }
           </div>
 
-          <div class="form-group">
-            <label>Objectif de collaboration</label>
-            <input type="text" formControlName="collaborationGoal">
+
+           <div class="form-group">
+            <label>Profil requis</label>
+            <input type="text" formControlName="requiredProfile">
+
+             @if (
+            announcementForm.get('requiredProfile')?.invalid &&
+            announcementForm.get('requiredProfile')?.touched
+          ) {
+            @if (announcementForm.get('requiredProfile')?.errors?.['required']) {
+              <small>Le profil requis est obligatoire.</small>
+            }
+            @if (announcementForm.get('requiredProfile')?.errors?.['minlength']) {
+              <small>Minimum 3 caractères.</small>
+            }
+          }
           </div>
         }
 
         @if (selectedType === 'tourism') {
           <div class="form-group">
-            <label>Destination</label>
-            <input type="text" formControlName="destination">
+            <label>Type de projet touristique</label>
+            <input type="text" formControlName="tourismProjectType">
+              @if (
+            announcementForm.get('tourismProjectType')?.invalid &&
+            announcementForm.get('tourismProjectType')?.touched
+          ) {
+            @if (announcementForm.get('tourismProjectType')?.errors?.['required']) {
+              <small>Le type de projet touristique est obligatoire.</small>
+            }
+          }
           </div>
 
           <div class="form-group">
-            <label>Type d'activité</label>
-            <input type="text" formControlName="activityType">
+            <label>Capacité</label>
+            <input type="text" formControlName="capacity">
+              @if (
+            announcementForm.get('capacity')?.invalid &&
+            announcementForm.get('capacity')?.touched
+          ) {
+            @if (announcementForm.get('capacity')?.errors?.['required']) {
+              <small>La capacité est obligatoire.</small>
+            }
+            @if (announcementForm.get('capacity')?.errors?.['pattern']) {
+              <small>Format invalide.</small>
+            }
+          }
           </div>
         }
 
@@ -171,6 +250,12 @@
 
     <!-- BUTTONS -->
     <div class="form-actions">
+      <button
+  type="button"
+  class="draft-btn"
+  (click)="saveDraft()">
+  Sauvegarder en brouillon
+</button>
     
       <button type="button" class="btn-preview" (click)="showFormPreview()">
         Aperçu
@@ -183,35 +268,10 @@
 }
 
 @if (showPreview) {
-<div class="preview-side">
-  <h2>Aperçu de l'annonce</h2>
 
-  <p><strong>Type :</strong> {{ announcementForm.value.announcementType }}</p>
-  <p><strong>Titre :</strong> {{ announcementForm.value.title }}</p>
-  <p><strong>Description :</strong> {{ announcementForm.value.description }}</p>
-  <p><strong>Secteur :</strong> {{ announcementForm.value.sector }}</p>
-  <p><strong>Région :</strong> {{ announcementForm.value.region }}</p>
-  <p><strong>Contact :</strong> {{ announcementForm.value.contact }}</p>
+  <app-announcement-preview
+    [announcement]="announcementForm.value"
+     [selectedFiles]="selectedFiles">
+  </app-announcement-preview>
 
-  <h3>Pièces jointes</h3>
-
-  @if (selectedFiles.length > 0) {
-    <ul>
-      @for (file of selectedFiles; track file.name) {
-        <li>{{ file.name }}</li>
-      }
-    </ul>
-  } @else {
-    <p>Aucune pièce jointe.</p>
-  }
-
-  <div class="preview-actions">
-    <button type="button" (click)="editForm()">
-      Modifier
-    </button>
-    <button type="button" (click)="submit()">
-      Soumettre
-    </button>
-  </div>
-</div>
 }

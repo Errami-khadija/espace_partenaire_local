@@ -1,0 +1,108 @@
+<div class="preview-container">
+
+  <div class="preview-header">
+    <h2 class="preview-title">Aperçu de l'annonce</h2>
+    <span class="announcement-type">
+      {{ announcement()?.announcementType }}
+    </span>
+  </div>
+
+  <!-- ✅ WRAPPER SCROLLABLE -->
+  <div class="preview-scrollable">
+
+    <!-- IMAGE PRINCIPALE EN HAUT -->
+    @if (selectedFiles() && selectedFiles().length > 0) {
+      @for (file of selectedFiles(); track file.name; let i = $index) {
+        @if (i === 0 && file.type.startsWith('image/')) {
+          <div class="announcement-banner">
+            <img 
+              [src]="getFilePreview(file)" 
+              [alt]="file.name"
+              class="banner-image">
+          </div>
+        }
+      }
+    }
+
+    <div class="preview-content">
+
+      <h3 class="announcement-title">{{ announcement()?.title }}</h3>
+
+      <p class="announcement-description">
+        {{ announcement()?.description }}
+      </p>
+
+      <hr class="content-divider">
+
+      <div class="info-group">
+        <p class="info-item">
+          <strong class="info-label">Secteur :</strong>
+          <span class="info-value">{{ announcement()?.sector }}</span>
+        </p>
+
+        <p class="info-item">
+          <strong class="info-label">Région :</strong>
+          <span class="info-value">{{ announcement()?.region }}</span>
+        </p>
+
+        <p class="info-item">
+          <strong class="info-label">Contact :</strong>
+          <span class="info-value">{{ announcement()?.contact }}</span>
+        </p>
+      </div>
+
+      <!-- AUTRES PIÈCES JOINTES -->
+      @if (selectedFiles() && selectedFiles().length > 1) {
+        <hr class="content-divider">
+        
+        <div class="attachments-section">
+          <h4 class="attachments-title">Autres pièces jointes</h4>
+          
+          <div class="attachments-grid">
+            @for (file of selectedFiles(); track file.name; let i = $index) {
+              @if (!(i === 0 && file.type.startsWith('image/'))) {
+                <div class="attachment-card">
+                  
+                  @if (file.type.startsWith('image/')) {
+                    <div class="attachment-image">
+                      <img 
+                        [src]="getFilePreview(file)" 
+                        [alt]="file.name">
+                    </div>
+                  }
+
+                  @if (file.type === 'application/pdf') {
+                    <div class="attachment-pdf">
+                      <iframe
+                        [src]="getFilePreview(file)"
+                        [title]="file.name">
+                      </iframe>
+                    </div>
+                  }
+
+                  <div class="attachment-info">
+                    <span class="attachment-icon">
+                      @if (file.type.startsWith('image/')) {
+                        📷
+                      } @else if (file.type === 'application/pdf') {
+                        📄
+                      } @else {
+                        📎
+                      }
+                    </span>
+                    <span class="attachment-name">{{ file.name }}</span>
+                  </div>
+
+                </div>
+              }
+            }
+          </div>
+        </div>
+      }
+
+    </div>
+
+  </div>
+
+
+</div>

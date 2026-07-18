@@ -378,6 +378,19 @@ small {
   transform: scale(.98);
 }
 
+.draft-btn {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px 20px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
 /* Validation states */
 input.ng-invalid.ng-touched,
 select.ng-invalid.ng-touched,
