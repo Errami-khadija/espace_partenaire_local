@@ -1,11 +1,13 @@
 import { DomSanitizer } from '@angular/platform-browser';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Component, EventEmitter, Output } from '@angular/core';
+import Swal from 'sweetalert2';
+import { AnnouncementPreview } from '../announcement-preview/announcement-preview';
 
 @Component({
   selector: 'app-announcement-form',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, AnnouncementPreview],
   templateUrl: './announcement-form.html',
   styleUrl: './announcement-form.css',
 })
@@ -90,11 +92,22 @@ export class AnnouncementForm {
 
   this.announcementForm.addControl(
     'investmentAmount',
-    this.fb.control('', Validators.required)
+    this.fb.control('',  [
+    Validators.required,
+    Validators.pattern('^[0-9]+$')
+  ])
   );
 
   this.announcementForm.addControl(
-    'investmentType',
+    'estimatedROI',
+    this.fb.control('', [
+    Validators.required,
+    Validators.pattern('^[0-9]+(\\.[0-9]+)?$')
+  ])
+  );
+
+  this.announcementForm.addControl(
+    'projectDuration',
     this.fb.control('', Validators.required)
   );
 
@@ -104,12 +117,12 @@ export class AnnouncementForm {
     if(type === 'collaboration') {
 
       this.announcementForm.addControl(
-        'partnerType',
+        'collaborationType',
         this.fb.control('', Validators.required)
       );
 
       this.announcementForm.addControl(
-        'collaborationGoal',
+        'requiredProfile',
         this.fb.control('', Validators.required)
       );
 
@@ -119,13 +132,16 @@ export class AnnouncementForm {
    if(type === 'tourism') {
 
   this.announcementForm.addControl(
-    'destination',
+    'tourismProjectType',
     this.fb.control('', Validators.required)
   );
 
   this.announcementForm.addControl(
-    'activityType',
-    this.fb.control('', Validators.required)
+    'capacity',
+    this.fb.control('', [
+      Validators.required,
+      Validators.pattern('^[0-9]+$')
+    ])
   );
 
 }
@@ -156,11 +172,12 @@ export class AnnouncementForm {
 
     const fields = [
       'investmentAmount',
-      'investmentType',
-      'partnerType',
-      'collaborationGoal',
-      'destination',
-      'activityType'
+      'estimatedROI',
+      'projectDuration',
+      'collaborationType',
+      'requiredProfile',
+      'tourismProjectType',
+      'capacity'
     ];
 
 
@@ -173,6 +190,31 @@ export class AnnouncementForm {
     });
 
   }
+
+saveDraft(): void {
+
+  const draftAnnouncement = {
+    ...this.announcementForm.value,
+    status: 'draft',
+    savedAt: new Date()
+  };
+
+  console.log('Annonce sauvegardée en brouillon :', draftAnnouncement);
+
+  const Toast = Swal.mixin({
+  toast: true,
+  position: 'top-end',
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true
+});
+
+Toast.fire({
+  icon: 'success',
+  title: 'Brouillon sauvegardé avec succès'
+});
+
+}
 
   showFormPreview() {
 
