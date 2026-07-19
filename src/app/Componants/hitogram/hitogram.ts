@@ -1,0 +1,170 @@
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+
+declare const d3: any;
+
+interface DailyViews {
+  day: string;
+  views: number;
+}
+
+@Component({
+  selector: 'app-hitogram',
+  standalone: true,
+  templateUrl: './hitogram.html',
+  styleUrl: './hitogram.css',
+})
+export class Hitogram implements AfterViewInit {
+  @ViewChild('chart', { static: true }) chartContainer!: ElementRef<HTMLDivElement>;
+
+  protected readonly data: DailyViews[] = [
+    { day: '01', views: 3200 },
+    { day: '02', views: 2900 },
+    { day: '03', views: 3600 },
+    { day: '04', views: 4100 },
+    { day: '05', views: 3050 },
+    { day: '06', views: 3750 },
+    { day: '07', views: 4300 },
+    { day: '08', views: 3900 },
+    { day: '09', views: 4700 },
+    { day: '10', views: 4350 },
+    { day: '11', views: 5100 },
+    { day: '12', views: 4600 },
+    { day: '13', views: 4950 },
+    { day: '14', views: 5250 },
+    { day: '15', views: 4800 },
+    { day: '16', views: 4450 },
+    { day: '17', views: 5300 },
+    { day: '18', views: 5600 },
+    { day: '19', views: 5900 },
+    { day: '20', views: 6100 },
+    { day: '21', views: 5750 },
+    { day: '22', views: 6350 },
+    { day: '23', views: 6800 },
+    { day: '24', views: 7200 },
+    { day: '25', views: 6900 },
+    { day: '26', views: 7500 },
+    { day: '27', views: 7900 },
+    { day: '28', views: 8300 },
+    { day: '29', views: 7700 },
+    { day: '30', views: 8600 },
+  ];
+
+  ngAfterViewInit(): void {
+    this.renderChart();
+  }
+
+  private renderChart(): void {
+    const container = this.chartContainer.nativeElement;
+
+    if (typeof d3 === 'undefined') {
+      container.innerHTML = '<p class="chart-fallback">D3 is not available yet.</p>';
+      return;
+    }
+
+    const width = 760;
+    const height = 320;
+    const margin = { top: 20, right: 24, bottom: 40, left: 48 };
+    const innerWidth = width - margin.left - margin.right;
+    const innerHeight = height - margin.top - margin.bottom;
+
+    d3.select(container).selectAll('*').remove();
+
+    const svg = d3
+      .select(container)
+      .append('svg')
+      .attr('viewBox', `0 0 ${width} ${height}`)
+      .attr('role', 'img')
+      .attr('aria-label', 'Histogram of 30-day page views')
+      .style('width', '100%')
+      .style('height', 'auto');
+
+    const g = svg.append('g').attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+    const x = d3
+      .scaleBand()
+      .domain(this.data.map((item) => item.day))
+      .range([0, innerWidth])
+      .padding(0.3);
+
+    const y = d3
+      .scaleLinear()
+      .domain([0, d3.max(this.data, (item: DailyViews) => item.views)!])
+      .nice()
+      .range([innerHeight, 0]);
+
+    const radius = 7;
+
+    g.selectAll('path')
+      .data(this.data)
+      .enter()
+      .append('path')
+      .attr('d', (item: DailyViews) => {
+        const barX = x(item.day) ?? 0;
+        const barWidth = x.bandwidth();
+        const barY = innerHeight;
+        const barHeight = 0;
+        const topY = barY - barHeight;
+
+        return [
+          `M ${barX + radius} ${topY}`,
+          `L ${barX + barWidth - radius} ${topY}`,
+          `Q ${barX + barWidth} ${topY} ${barX + barWidth} ${topY + radius}`,
+          `L ${barX + barWidth} ${barY}`,
+          `L ${barX} ${barY}`,
+          `L ${barX} ${topY + radius}`,
+          `Q ${barX} ${topY} ${barX + radius} ${topY}`,
+          'Z',
+        ].join(' ');
+      })
+      .attr('fill', '#4f46e5')
+      .attr('opacity', 0.15)
+      .attr('stroke', '#4338ca')
+      .attr('stroke-width', 0.7)
+      .style('shape-rendering', 'crispEdges')
+      .transition()
+      .duration(1000)
+      .ease(d3.easeCubicOut)
+      .attr('d', (item: DailyViews) => {
+        const barX = x(item.day) ?? 0;
+        const barWidth = x.bandwidth();
+        const barY = y(item.views);
+        const barHeight = innerHeight - y(item.views);
+        const topY = barY;
+
+        return [
+          `M ${barX + radius} ${topY}`,
+          `L ${barX + barWidth - radius} ${topY}`,
+          `Q ${barX + barWidth} ${topY} ${barX + barWidth} ${topY + radius}`,
+          `L ${barX + barWidth} ${barY + barHeight}`,
+          `L ${barX} ${barY + barHeight}`,
+          `L ${barX} ${topY + radius}`,
+          `Q ${barX} ${topY} ${barX + radius} ${topY}`,
+          'Z',
+        ].join(' ');
+      })
+      .attr('opacity', 0.95);
+
+    g.append('g')
+      .attr('transform', `translate(0, ${innerHeight})`)
+      .call(d3.axisBottom(x).tickSize(0));
+
+    g.append('g').call(d3.axisLeft(y).ticks(5).tickSize(0));
+
+    g.append('text')
+      .attr('x', innerWidth / 2)
+      .attr('y', innerHeight + 34)
+      .attr('text-anchor', 'middle')
+      .attr('fill', '#64748b')
+      .style('font-size', '12px')
+      .text('Days');
+
+    g.append('text')
+      .attr('transform', 'rotate(-90)')
+      .attr('x', -innerHeight / 2)
+      .attr('y', -36)
+      .attr('text-anchor', 'middle')
+      .attr('fill', '#64748b')
+      .style('font-size', '12px')
+      .text('Views');
+  }
+}

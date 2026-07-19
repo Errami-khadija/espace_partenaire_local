@@ -1,0 +1,83 @@
+/* Prevent page-level scrolling */
+:host,
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+.statistics-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr; /* left column wider, matches sketch proportions */
+  gap: 16px;
+  height: 100%;
+  width: 100%;
+  padding: 16px;
+  overflow: hidden;
+}
+
+/* ---------- LEFT COLUMN ---------- */
+.stats-column-left {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100%;
+  min-height: 0; /* important: allows children to shrink instead of overflowing */
+  overflow: hidden;
+}
+
+.stats-top {
+  flex: 0 0 15%;   /* small fixed-ish band for the KPI component */
+  min-height: 0;
+  overflow: hidden;
+}
+
+.stats-main {
+  flex: 1 1 auto;  /* histogram fills all remaining space */
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ---------- RIGHT COLUMN ---------- */
+.stats-column-right {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.stats-right-top {
+  flex: 1 1 30%;
+  min-height: 0;
+  max-height: 30%;      /* hard cap so donut can't push past its share */
+  overflow: hidden;
+}
+
+.stats-right-bottom {
+  flex: 1 1 70%;
+  min-height: 0;
+  max-height: 70%;      /* hard cap so table can't push past its share */
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Make sure the component itself participates in the flex shrink chain */
+app-rank-table {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;         /* THIS is very likely what's missing */
+  overflow: hidden;
+}

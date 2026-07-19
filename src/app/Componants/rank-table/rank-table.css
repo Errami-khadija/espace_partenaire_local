@@ -1,0 +1,91 @@
+.rank-table-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 1.2rem;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+
+  /* NEW: constrain overall card height */
+  height: 100%;          /* fills whatever the parent (.stats-right-bottom) gives it */
+  max-height: 480px;      /* hard cap — adjust to taste, or remove if using height:100% only */
+  display: flex;
+  flex-direction: column;
+  min-height: 0;          /* lets flex children shrink instead of overflowing */
+}
+
+.rank-table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  flex-shrink: 0;          /* NEW: header never shrinks or scrolls */
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  overflow-y: auto;        /* NEW: vertical scroll for table body */
+  flex: 1;                 /* NEW: takes remaining space in the card */
+  min-height: 0;           /* NEW: required for overflow to actually kick in inside flex */
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* NEW: keep column headers visible while scrolling */
+thead th {
+  position: sticky;
+  top: 0;
+  background: #ffffff;
+  z-index: 1;
+}
+
+th, td {
+  text-align: left;
+  padding: 0.8rem 0.7rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+th {
+  color: #64748b;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+tbody tr:hover {
+  background: #f8fafc;
+}
+
+.table-row {
+  opacity: 0;
+  transform: translateY(8px);
+  animation: rowFadeIn 0.45s ease forwards;
+}
+
+@keyframes rowFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rank {
+  font-weight: 700;
+  color: #4338ca;
+}
+
+.name-cell {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.table-number {
+  font-variant-numeric: tabular-nums;
+}
