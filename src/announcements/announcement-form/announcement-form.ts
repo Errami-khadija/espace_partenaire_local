@@ -1,9 +1,16 @@
 import { DomSanitizer } from '@angular/platform-browser';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Component, EventEmitter, Output } from '@angular/core';
 import Swal from 'sweetalert2';
 import { AnnouncementPreview } from '../announcement-preview/announcement-preview';
-
+import { Announcement } from '../../app/models/announcement.model';
+import {
+  Component,
+  EventEmitter,
+  Output,
+  Input,
+  OnChanges,
+  SimpleChanges
+} from '@angular/core';
 @Component({
   selector: 'app-announcement-form',
   standalone: true,
@@ -13,8 +20,9 @@ import { AnnouncementPreview } from '../announcement-preview/announcement-previe
 })
 
 
-export class AnnouncementForm {
+export class AnnouncementForm implements OnChanges {
     @Output() close = new EventEmitter<void>();
+    @Input() announcement?: Announcement;
 
   announcementForm!: FormGroup;
 
@@ -60,7 +68,7 @@ export class AnnouncementForm {
     '',
     [
       Validators.required,
-      Validators.pattern(/^[0-9]{10}$/)
+      Validators.pattern(/^[0-9]{8}$/)
     ]
   ]
 
@@ -271,4 +279,35 @@ submit() {
   console.log("FormData ready");
 
 }
+
+ngOnChanges(changes: SimpleChanges): void {
+
+    if (changes['announcement'] && this.announcement) {
+
+      this.selectedType = this.announcement.type;
+
+      this.updateSpecificFields(this.announcement.type);
+
+      this.announcementForm.patchValue({
+        announcementType: this.announcement.type,
+        title: this.announcement.title,
+        description: this.announcement.description,
+        sector: this.announcement.sector,
+        region: this.announcement.region,
+        contact: this.announcement.contact,
+
+        investmentAmount: this.announcement.investmentAmount,
+        estimatedROI: this.announcement.estimatedROI,
+        projectDuration: this.announcement.projectDuration,
+
+        collaborationType: this.announcement.collaborationType,
+        requiredProfile: this.announcement.requiredProfile,
+
+        tourismProjectType: this.announcement.tourismProjectType,
+        capacity: this.announcement.capacity
+      });
+
+    }
+
+  }
 }
