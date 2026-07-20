@@ -4,6 +4,13 @@
   border-radius: 16px;
   padding: 1.2rem;
   box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+
+  /* NEW: fill parent + let children stack in a column that can grow */
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 }
 
 .histogram-header {
@@ -11,42 +18,21 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
-}
-
-.eyebrow {
-  margin: 0 0 0.2rem;
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: #6366f1;
-}
-
-.histogram-header h3 {
-  margin: 0;
-  color: #0f172a;
-  font-size: 1.05rem;
-}
-
-.pill {
-  background: #eef2ff;
-  color: #4338ca;
-  padding: 0.4rem 0.7rem;
-  border-radius: 1px;
-  font-size: 0.8rem;
-  font-weight: 600;
+  flex-shrink: 0; /* NEW: header keeps its natural height, never shrinks */
 }
 
 .chart-wrapper {
   width: 100%;
   overflow: hidden;
+
+  /* NEW: take up all remaining vertical space in the card */
+  flex: 1;
+  min-height: 0; /* critical for flex children that need to shrink/scroll */
+  display: flex; /* optional, helps if the svg itself needs to stretch */
 }
 
 .chart-wrapper svg {
   display: block;
-}
-
-.chart-fallback {
-  color: #64748b;
-  padding: 1rem 0;
+  width: 100%;
+  height: 100%; /* NEW: make svg fill the wrapper */
 }

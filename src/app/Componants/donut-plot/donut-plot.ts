@@ -1,4 +1,10 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnDestroy,
+  ViewChild,
+} from '@angular/core';
 
 declare const d3: any;
 
@@ -21,16 +27,16 @@ export class DonutPlot implements AfterViewInit, OnDestroy {
 
   private animationFrameId?: number;
   private percentageLabel?: any;
+  private resizeObserver?: ResizeObserver;
+  private currentSize = 260;
 
   private getAnimationFrame(callback: FrameRequestCallback): number {
     if (typeof globalThis.requestAnimationFrame === 'function') {
       return globalThis.requestAnimationFrame(callback);
     }
-
     if (typeof globalThis.setTimeout === 'function') {
       return globalThis.setTimeout(() => callback(Date.now()), 16) as unknown as number;
     }
-
     return 0;
   }
 
@@ -39,7 +45,6 @@ export class DonutPlot implements AfterViewInit, OnDestroy {
       globalThis.cancelAnimationFrame(id);
       return;
     }
-
     if (typeof globalThis.clearTimeout === 'function') {
       globalThis.clearTimeout(id);
     }
@@ -48,12 +53,35 @@ export class DonutPlot implements AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     this.renderChart();
     this.startNumberAnimation();
+    this.observeResize();
   }
 
   ngOnDestroy(): void {
     if (this.animationFrameId !== undefined) {
       this.cancelAnimationFrame(this.animationFrameId);
     }
+    this.resizeObserver?.disconnect();
+  }
+
+  private observeResize(): void {
+    const wrapper = this.chartContainer.nativeElement.parentElement;
+    if (!wrapper || typeof ResizeObserver === 'undefined') return;
+
+    this.resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+        const size = Math.max(40, Math.floor(Math.min(width, height)));
+
+        if (Math.abs(size - this.currentSize) > 1) {
+          this.currentSize = size;
+          const el = this.chartContainer.nativeElement;
+          el.style.width = `${size}px`;
+          el.style.height = `${size}px`;
+        }
+      }
+    });
+
+    this.resizeObserver.observe(wrapper);
   }
 
   private startNumberAnimation(): void {
@@ -124,12 +152,8 @@ export class DonutPlot implements AfterViewInit, OnDestroy {
       .attr('fill', (_: unknown, index: number) => color[index])
       .attr('stroke', '#fff')
       .attr('stroke-width', 2)
-      .attr('d', (d: any) => {
-        // start with a zero-length arc so we can animate to the final arc
-        return arc({ startAngle: d.startAngle, endAngle: d.startAngle }) as any;
-      });
+      .attr('d', (d: any) => arc({ startAngle: d.startAngle, endAngle: d.startAngle }) as any);
 
-    // animate all slices from zero-length arcs to their final angles
     try {
       slices.transition()
         .delay((_: any, i: number) => i * 120)
@@ -141,7 +165,6 @@ export class DonutPlot implements AfterViewInit, OnDestroy {
           return (t: number) => arc(interpolate(t)) as any;
         });
     } catch (e) {
-      // fallback for SSR or if transitions aren't available
       slices.attr('d', arc as any);
     }
 
@@ -161,9 +184,7 @@ export class DonutPlot implements AfterViewInit, OnDestroy {
       .text('views → leads');
 
     if (typeof globalThis.requestAnimationFrame === 'function') {
-      this.getAnimationFrame(() => {
-        container.classList.add('is-visible');
-      });
+      this.getAnimationFrame(() => container.classList.add('is-visible'));
     } else {
       container.classList.add('is-visible');
     }

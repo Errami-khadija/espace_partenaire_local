@@ -4,6 +4,13 @@
   border-radius: 16px;
   padding: 1.2rem;
   box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .donut-header {
@@ -11,21 +18,18 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  min-width: 0;
+  flex-shrink: 0;
 }
 
-.eyebrow {
-  margin: 0 0 0.2rem;
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: #6366f1;
-}
-
+.eyebrow,
 .donut-header h3 {
-  margin: 0;
-  color: #0f172a;
-  font-size: 1.05rem;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .pill {
@@ -35,38 +39,24 @@
   border-radius: 999px;
   font-size: 0.8rem;
   font-weight: 600;
-}
-
-.stat-value {
-  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .donut-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
 }
 
 .chart-area {
-  width: 260px;
-  height: 260px;
+  /* size is now set inline via JS (ResizeObserver), not CSS */
+  margin: auto;
 }
 
 .chart-area svg {
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  transform: scale(0.94);
-  transform-origin: center;
-  transition: opacity 0.7s ease, transform 0.7s ease;
-}
-
-.chart-area.is-visible svg {
-  opacity: 1;
-  transform: scale(1);
-}
-
-.chart-fallback {
-  color: #64748b;
-  padding: 1rem 0;
+  display: block;
 }
