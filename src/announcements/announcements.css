@@ -279,3 +279,380 @@ h1 {
     font-size: 14px;
   }
 }
+
+
+/* ========================================
+   MODAL CONTENT DETAILS - UNE SEULE ZONE SCROLLABLE
+   ======================================== */
+
+.modal-content.details-modal {
+  width: 95%;
+  max-width: 900px;
+  max-height: 90vh;
+  
+  background: #ffffff;
+  border-radius: 20px;
+  
+  overflow: hidden;
+  
+  display: flex;
+  flex-direction: column;
+  
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+  
+  animation: modalSlideUp 0.3s ease;
+}
+
+@keyframes modalSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ✅ WRAPPER SCROLLABLE UNIQUE */
+.modal-content.details-modal .modal-body-wrapper {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Scrollbar personnalisée */
+.modal-content.details-modal .modal-body-wrapper::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-content.details-modal .modal-body-wrapper::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 10px;
+}
+
+.modal-content.details-modal .modal-body-wrapper::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+.modal-content.details-modal .modal-body-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Header du modal de détails */
+.modal-content.details-modal .modal-header {
+  background: linear-gradient(135deg, #2c79eb 0%, #159699 100%);
+  padding: 28px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.modal-content.details-modal .modal-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at top right,
+    rgba(255, 255, 255, 0.15) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.modal-content.details-modal .modal-header h2 {
+  font-family: 'Inter', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: -0.02em;
+  position: relative;
+  z-index: 1;
+}
+
+/* Bouton fermer dans le header */
+.modal-content.details-modal .modal-header .close-btn {
+  position: static;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 300;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  border: none;
+}
+
+.modal-content.details-modal .modal-header .close-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: rotate(90deg);
+}
+
+.modal-content.details-modal .modal-header .close-btn:active {
+  transform: rotate(90deg) scale(0.95);
+}
+
+/* ✅ Padding pour le contenu scrollable */
+.modal-content.details-modal .details-grid {
+  padding: 32px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  margin-bottom: 0;
+}
+
+/* Item de détail */
+.modal-content.details-modal .detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  background: #f8fafc;
+  border-radius: 12px;
+  border-left: 3px solid #2c79eb;
+  transition: all 0.2s ease;
+}
+
+.modal-content.details-modal .detail-item:hover {
+  background: #f1f5f9;
+  transform: translateX(2px);
+}
+
+.modal-content.details-modal .detail-item.full-width {
+  grid-column: 1 / -1;
+}
+
+.modal-content.details-modal .detail-item label {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.modal-content.details-modal .detail-item span {
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: #1e293b;
+  line-height: 1.6;
+}
+
+/* Séparateur */
+.modal-content.details-modal hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    #e2e8f0 20%,
+    #e2e8f0 80%,
+    transparent 100%
+  );
+  margin: 0 32px 32px 32px;
+}
+
+/* Titres de section */
+.modal-content.details-modal h3 {
+  font-family: 'Inter', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 20px 0;
+  letter-spacing: -0.01em;
+  padding: 0 32px;
+}
+
+/* Boîte de rejet */
+.modal-content.details-modal .reject-box {
+  padding: 20px;
+  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+  border-radius: 12px;
+  border-left: 4px solid #dc2626;
+  margin: 0 32px 32px 32px;
+}
+
+.modal-content.details-modal .reject-box h3 {
+  font-size: 16px;
+  color: #dc2626;
+  margin: 0 0 12px 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modal-content.details-modal .reject-box h3::before {
+  content: '⚠️';
+  font-size: 18px;
+}
+
+.modal-content.details-modal .reject-box p {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: #991b1b;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Footer du modal */
+.modal-content.details-modal .modal-footer {
+  padding: 24px 32px;
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.modal-content.details-modal .close-modal-btn {
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 12px 32px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  background: linear-gradient(100deg, #2c79eb, #159699);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(11, 44, 80, 0.2);
+}
+
+.modal-content.details-modal .close-modal-btn:hover {
+  background: linear-gradient(100deg, #2673e5, #13a89d);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(11, 44, 80, 0.3);
+}
+
+.modal-content.details-modal .close-modal-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+  .modal-content.details-modal {
+    width: 100%;
+    max-width: 100%;
+    max-height: 95vh;
+    border-radius: 20px 20px 0 0;
+  }
+
+  .modal-content.details-modal .modal-header {
+    padding: 20px 24px;
+  }
+
+  .modal-content.details-modal .modal-header h2 {
+    font-size: 20px;
+  }
+
+  .modal-content.details-modal .details-grid {
+    padding: 24px;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .modal-content.details-modal .detail-item {
+    padding: 14px;
+  }
+
+  .modal-content.details-modal h3 {
+    font-size: 16px;
+    padding: 0 24px;
+  }
+
+  .modal-content.details-modal hr {
+    margin: 0 24px 24px 24px;
+  }
+
+  .modal-content.details-modal .reject-box {
+    padding: 16px;
+    margin: 0 24px 24px 24px;
+  }
+
+  .modal-content.details-modal .modal-footer {
+    padding: 20px 24px;
+  }
+
+  .modal-content.details-modal .close-modal-btn {
+    width: 100%;
+    padding: 14px 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-content.details-modal .modal-header {
+    padding: 16px 20px;
+  }
+
+  .modal-content.details-modal .modal-header h2 {
+    font-size: 18px;
+  }
+
+  .modal-content.details-modal .modal-header .close-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 18px;
+  }
+
+  .modal-content.details-modal .details-grid {
+    padding: 20px;
+    gap: 12px;
+  }
+
+  .modal-content.details-modal .detail-item {
+    padding: 12px;
+  }
+
+  .modal-content.details-modal .detail-item label {
+    font-size: 12px;
+  }
+
+  .modal-content.details-modal .detail-item span {
+    font-size: 14px;
+  }
+
+  .modal-content.details-modal h3 {
+    font-size: 15px;
+    padding: 0 20px;
+  }
+
+  .modal-content.details-modal hr {
+    margin: 0 20px 20px 20px;
+  }
+
+  .modal-content.details-modal .reject-box {
+    padding: 14px;
+    margin: 0 20px 20px 20px;
+  }
+
+  .modal-content.details-modal .reject-box h3 {
+    font-size: 14px;
+  }
+
+  .modal-content.details-modal .reject-box p {
+    font-size: 13px;
+  }
+
+  .modal-content.details-modal .modal-footer {
+    padding: 16px 20px;
+  }
+}
