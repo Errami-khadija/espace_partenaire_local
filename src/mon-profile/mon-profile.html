@@ -1,1 +1,205 @@
-<p>mon-profile works!</p>
+<form [formGroup]="profileForm">
+
+    <div class="logo-upload">
+
+  <label>Logo de l'entreprise</label>
+
+  <input
+    type="file"
+    accept="image/*"
+    (change)="onLogoSelected($event)">
+
+@if (logoPreview) {
+  <img
+    [src]="logoPreview"
+    alt="Logo"
+    class="logo-preview">
+}
+
+</div>
+
+  <div>
+  <label>Nom de l'entreprise</label>
+
+  <input
+    type="text"
+    formControlName="companyName">
+
+  @if (
+    profileForm.get('companyName')?.invalid &&
+    profileForm.get('companyName')?.touched
+  ) {
+
+    @if (profileForm.get('companyName')?.errors?.['required']) {
+      <small>Le nom de l'entreprise est obligatoire.</small>
+    }
+
+    @if (profileForm.get('companyName')?.errors?.['minlength']) {
+      <small>Minimum 3 caractères.</small>
+    }
+
+  }
+
+</div>
+
+<div>
+
+  <label>Secteur</label>
+
+  <input
+    type="text"
+    formControlName="sector">
+
+  @if (
+    profileForm.get('sector')?.invalid &&
+    profileForm.get('sector')?.touched
+  ) {
+    <small>Le secteur est obligatoire.</small>
+  }
+
+</div>
+
+<div>
+
+  <label>Région</label>
+
+  <input
+    type="text"
+    formControlName="region">
+
+  @if (
+    profileForm.get('region')?.invalid &&
+    profileForm.get('region')?.touched
+  ) {
+    <small>La région est obligatoire.</small>
+  }
+
+</div>
+
+<div>
+
+<label>Site Web</label>
+
+<input
+type="url"
+formControlName="website">
+
+@if (
+profileForm.get('website')?.invalid &&
+profileForm.get('website')?.touched
+) {
+
+<small>
+Veuillez saisir une URL valide.
+</small>
+
+}
+
+</div>
+
+<div>
+
+<label>Description</label>
+
+<textarea
+rows="5"
+formControlName="description">
+</textarea>
+
+@if (
+profileForm.get('description')?.invalid &&
+profileForm.get('description')?.touched
+) {
+
+@if(profileForm.get('description')?.errors?.['required']) {
+
+<small>
+La description est obligatoire.
+</small>
+
+}
+
+@if(profileForm.get('description')?.errors?.['minlength']) {
+
+<small>
+Minimum 20 caractères.
+</small>
+
+}
+
+}
+
+</div>
+
+<div>
+
+<label>Email</label>
+
+<input
+type="email"
+formControlName="email">
+
+@if (
+profileForm.get('email')?.invalid &&
+profileForm.get('email')?.touched
+) {
+
+@if(profileForm.get('email')?.errors?.['required']) {
+
+<small>
+L'email est obligatoire.
+</small>
+
+}
+
+@if(profileForm.get('email')?.errors?.['email']) {
+
+<small>
+Adresse email invalide.
+</small>
+
+}
+
+}
+
+</div>
+
+<div>
+
+<label>Téléphone</label>
+
+<input
+type="tel"
+formControlName="phone">
+
+@if (
+profileForm.get('phone')?.invalid &&
+profileForm.get('phone')?.touched
+) {
+
+@if(profileForm.get('phone')?.errors?.['required']) {
+
+<small>
+Le téléphone est obligatoire.
+</small>
+
+}
+
+@if(profileForm.get('phone')?.errors?.['pattern']) {
+
+<small>
+Numéro de téléphone invalide.
+</small>
+
+}
+
+}
+
+</div>
+
+  <div>
+    <label>Adresse</label>
+    <input type="text" formControlName="address">
+  </div>
+
+</form>

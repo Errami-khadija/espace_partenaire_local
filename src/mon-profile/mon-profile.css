@@ -1,0 +1,30 @@
+.logo-upload {
+  margin-bottom: 20px;
+}
+
+.logo-preview {
+  width: 150px;
+  height: 150px;
+  border: 2px solid red;
+  display: block;
+}
+
+input.ng-invalid.ng-touched,
+textarea.ng-invalid.ng-touched {
+  border-color: #ef4444;
+}
+
+input.ng-invalid.ng-touched:focus,
+textarea.ng-invalid.ng-touched:focus {
+  box-shadow: 0 0 0 3px rgba(239,68,68,.1);
+}
+
+input.ng-valid.ng-touched,
+textarea.ng-valid.ng-touched {
+  border-color: #10b981;
+}
+
+small{
+  color:#ef4444;
+  font-size:13px;
+}
