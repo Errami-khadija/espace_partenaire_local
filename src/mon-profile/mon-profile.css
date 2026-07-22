@@ -1,30 +1,186 @@
-.logo-upload {
-  margin-bottom: 20px;
+/* Card Container */
+.modal-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 32px;
+  max-width: 900px;
+  margin: 20px auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Form Grid Layout */
+.profile-form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px 24px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group.full-width {
+  grid-column: span 2;
+}
+
+/* Labels */
+label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 8px;
+}
+
+/* Form Controls (Inputs, Textarea) */
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="url"],
+textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1.5px solid #2bb5a4; /* Teal accent border from design */
+  border-radius: 10px;
+  font-size: 14px;
+  color: #333;
+  outline: none;
+  background-color: #ffffff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+}
+
+input:focus,
+textarea:focus {
+  border-color: #1f9485;
+  box-shadow: 0 0 0 3px rgba(43, 181, 164, 0.15);
+}
+
+/* Invalid / Error States */
+input.is-invalid,
+textarea.is-invalid {
+  border-color: #e74c3c !important;
+}
+
+.error-msg {
+  color: #e74c3c;
+  font-size: 12px;
+  margin-top: 6px;
+}
+
+/* Logo Upload & Preview Box */
+/* Container Box */
+.file-input-wrapper {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Hide native file input */
+.hidden-file-input {
+  display: none;
+}
+
+/* Modern File Upload Container */
+.custom-file-upload {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.custom-file-upload:hover {
+  background-color: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+/* Upload Button (Pill style matching your screenshot) */
+.upload-btn {
+  background-color: #ffffff;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+}
+
+.custom-file-upload:hover .upload-btn {
+  background-color: #f8fafc;
+  color: #1e293b;
+  border-color: #94a3b8;
+}
+
+/* File Name / Placeholder Text */
+.file-name {
+  font-size: 13px;
+  color: #64748b;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.preview-box {
+  margin-top: 12px;
+  background-color: #f8fbfb;
+  border: 1px solid #e0f2f1;
+  border-radius: 10px;
+  padding: 12px;
+  display: inline-block;
 }
 
 .logo-preview {
-  width: 150px;
-  height: 150px;
-  border: 2px solid red;
-  display: block;
+  max-width: 140px;
+  max-height: 140px;
+  object-fit: contain;
+  border-radius: 8px;
 }
 
-input.ng-invalid.ng-touched,
-textarea.ng-invalid.ng-touched {
-  border-color: #ef4444;
+/* Action Buttons */
+.form-actions {
+  grid-column: 1 / -1; 
+  display: flex;
+  justify-content: flex-end; 
+  width: 100%;
+  margin-top: 24px;
 }
 
-input.ng-invalid.ng-touched:focus,
-textarea.ng-invalid.ng-touched:focus {
-  box-shadow: 0 0 0 3px rgba(239,68,68,.1);
+.save-btn {
+  background: linear-gradient(135deg, #2bb5a4, #1d88af);
+  color: #ffffff;
+  border: none;
+  padding: 12px 28px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.1s ease, opacity 0.2s ease;
+  box-shadow: 0 4px 12px rgba(43, 181, 164, 0.3);
+}
+.save-btn:hover:not(:disabled) {
+  opacity: 0.92;
+  transform: translateY(-1px);
 }
 
-input.ng-valid.ng-touched,
-textarea.ng-valid.ng-touched {
-  border-color: #10b981;
+.save-btn:disabled {
+  background: #cccccc;
+  box-shadow: none;
+  cursor: not-allowed;
 }
 
-small{
-  color:#ef4444;
-  font-size:13px;
+/* Responsive view for mobile */
+@media (max-width: 640px) {
+  .profile-form {
+    grid-template-columns: 1fr;
+  }
+  .form-group.full-width {
+    grid-column: span 1;
+  }
 }

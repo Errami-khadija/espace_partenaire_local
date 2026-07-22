@@ -1,4 +1,4 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import {
@@ -7,6 +7,8 @@ import {
   FormGroup,
   Validators
 } from '@angular/forms';
+
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-mon-profile',
@@ -21,8 +23,12 @@ export class MonProfile implements OnInit {
 
   logoPreview: SafeUrl | null = null;
   selectedLogo: File | null = null;
+  selectedFileName: string = ''; // Stores selected file name for UI display
 
-  constructor(private fb: FormBuilder,  private sanitizer: DomSanitizer) {}
+  constructor(
+    private fb: FormBuilder,
+    private sanitizer: DomSanitizer
+  ) {}
 
   ngOnInit(): void {
     this.profileForm = this.fb.group({
@@ -38,20 +44,50 @@ export class MonProfile implements OnInit {
     });
   }
 
-onLogoSelected(event: Event): void {
-  const input = event.target as HTMLInputElement;
+  onLogoSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
 
-  if (!input.files?.length) return;
+    if (!input.files?.length) return;
 
-  const file = input.files[0];
+    const file = input.files[0];
 
-  this.selectedLogo = file;
+    this.selectedLogo = file;
+    this.selectedFileName = file.name; // Capture filename for custom HTML label
 
-  this.profileForm.patchValue({
-    logo: file
-  });
+    this.profileForm.patchValue({
+      logo: file
+    });
 
-  const url = URL.createObjectURL(file);
-  this.logoPreview = this.sanitizer.bypassSecurityTrustUrl(url);
-}
+    const url = URL.createObjectURL(file);
+    this.logoPreview = this.sanitizer.bypassSecurityTrustUrl(url);
+  }
+
+  saveProfile(): void {
+    if (this.profileForm.invalid) {
+      this.profileForm.markAllAsTouched();
+
+      Swal.fire({
+        icon: 'error',
+        title: 'Erreur',
+        text: 'Veuillez corriger les erreurs avant d’enregistrer.'
+      });
+
+      return;
+    }
+
+    const profileData = {
+      ...this.profileForm.value,
+      logo: this.selectedLogo
+    };
+
+    console.log(profileData);
+
+    Swal.fire({
+      icon: 'success',
+      title: 'Succès',
+      text: 'Le profil partenaire a été enregistré avec succès.',
+      timer: 2000,
+      showConfirmButton: false
+    });
+  }
 }
