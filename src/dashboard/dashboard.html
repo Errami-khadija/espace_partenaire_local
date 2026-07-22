@@ -1,0 +1,40 @@
+<div class="welcome-banner">
+  <!-- Décoration d'arrière-plan créative (Vague/Cercle en filigrane) -->
+  <div class="banner-shape"></div>
+
+  <div class="banner-content">
+    <div class="banner-text">
+      <div class="badge-status">
+        <span class="status-dot"></span>
+        <span>Partenaire Actif</span>
+      </div>
+      <h1>Ravi de vous revoir ! </h1>
+      <p>
+        Gérez vos annonces, suivez vos leads et optimisez votre visibilité en un seul endroit.
+      </p>
+    </div>
+
+    <div class="banner-widgets">
+      
+
+      <button class="quick-action-btn" (click)="goToProfile()">
+        <span class="material-icons">person</span>
+        <span>Voir le profil</span>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="stats-grid">
+
+  @for (stat of stats; track stat.title) {
+
+    <app-stat-card
+      [title]="stat.title"
+      [value]="stat.value"
+      [icon]="stat.icon"
+      [color]="stat.color">
+    </app-stat-card>
+
+  }
+
+</div>

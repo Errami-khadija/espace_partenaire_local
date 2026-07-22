@@ -23,6 +23,7 @@
         <a class="nav-link" [routerLink]="item.path" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
           <span class="nav-icon" aria-hidden="true">
             <ng-container [ngSwitch]="item.icon">
+              <svg *ngSwitchCase="'home'" lucideHouse [size]="18" [strokeWidth]="1.8"></svg>
               <svg *ngSwitchCase="'bell'" lucideBell [size]="18" [strokeWidth]="1.8"></svg>
               <svg *ngSwitchCase="'building'" lucideBuilding2 [size]="18" [strokeWidth]="1.8"></svg>
               <svg *ngSwitchCase="'chart'" lucideChartColumn [size]="18" [strokeWidth]="1.8"></svg>
