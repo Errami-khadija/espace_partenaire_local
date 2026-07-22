@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
-import { NotificationComponent } from '../Componants/notification/notification.component';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [NotificationComponent],
+  imports: [],
   templateUrl: './header.html',
   styleUrl: './header.css'
 })
