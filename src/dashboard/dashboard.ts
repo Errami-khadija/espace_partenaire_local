@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StatCard } from './components/stat-card/stat-card';
 import { Router, RouterModule } from '@angular/router';
+import { DashboardStats } from '../app/core/models/dashboard-stats';
+import { DashboardService } from '../app/core/services/dashboard';
 
 
 @Component({
@@ -15,40 +17,44 @@ import { Router, RouterModule } from '@angular/router';
   styleUrl: './dashboard.css',
 })
 export class Dashboard {
+ stats: any[] = [];
 
-  stats = [
+constructor(private dashboardService: DashboardService, private router: Router) {}
 
-  {
-    title: 'Annonces publiées',
-    value: 12,
-    icon: 'campaign',
-    color: '#2E7D32'
-  },
+ngOnInit(): void {
+  this.dashboardService.getDashboardStats().subscribe({
+   next: (data) => {
+  this.stats = [
+    {
+      title: 'Annonces actives',
+      value: data.activeAnnouncements,
+      icon: 'campaign',
+      color: '#2563eb'
+    },
+    {
+      title: 'En attente',
+      value: data.pendingAnnouncements,
+      icon: 'schedule',
+      color: '#f59e0b'
+    },
+    {
+      title: 'Leads ce mois',
+      value: data.monthlyLeads,
+      icon: 'groups',
+      color: '#10b981'
+    },
+    {
+      title: 'Vues totales',
+      value: data.totalViews,
+      icon: 'visibility',
+      color: '#8b5cf6'
+    }
+  ];
+},
+    error: (err) => console.error(err)
+  });
+}
 
-  {
-    title: 'En attente',
-    value: 4,
-    icon: 'schedule',
-    color: '#FB8C00'
-  },
-
-  {
-    title: 'Leads ce mois',
-    value: 28,
-    icon: 'groups',
-    color: '#1976D2'
-  },
-
-  {
-    title: 'Vues totales',
-    value: 1532,
-    icon: 'visibility',
-    color: '#8E24AA'
-  }
-
-];
-
-constructor(private router: Router) {} 
 
   // Method for programmatic navigation
   goToProfile(): void {
