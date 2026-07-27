@@ -26,7 +26,7 @@ export interface Announcement {
   projectDuration?: number;
 
   collaborationType?: string;
-  profileSought?: string;
+  requiredProfile?: string;
 
   tourismProjectType?: string;
   capacity?: number;

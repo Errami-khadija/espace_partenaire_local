@@ -132,16 +132,16 @@
 
            <div class="form-group">
             <label>Profil requis</label>
-            <input type="text" formControlName="profileSought">
+            <input type="text" formControlName="requiredProfile">
 
              @if (
-            announcementForm.get('profileSought')?.invalid &&
-            announcementForm.get('profileSought')?.touched
+            announcementForm.get('requiredProfile')?.invalid &&
+            announcementForm.get('requiredProfile')?.touched
           ) {
-            @if (announcementForm.get('profileSought')?.errors?.['required']) {
+            @if (announcementForm.get('requiredProfile')?.errors?.['required']) {
               <small>Le profil requis est obligatoire.</small>
             }
-            @if (announcementForm.get('profileSought')?.errors?.['minlength']) {
+            @if (announcementForm.get('requiredProfile')?.errors?.['minlength']) {
               <small>Minimum 3 caractères.</small>
             }
           }
@@ -218,6 +218,26 @@
             multiple
             (change)="onFileSelected($event)"
           >
+
+          @if (existingAttachments.length > 0) {
+
+  <div class="existing-files">
+
+    <h4>Pièces jointes actuelles</h4>
+
+    @for(file of existingAttachments; track file) {
+
+      <div class="existing-file">
+
+        📎 {{ file }}
+
+      </div>
+
+    }
+
+  </div>
+
+}
 
           @if (selectedFiles.length > 0) {
             <h3>Aperçu des fichiers</h3>

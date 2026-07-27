@@ -145,7 +145,7 @@
           </div>
           <div class="detail-item">
             <label>Profil recherché</label>
-            <span>{{ selectedAnnouncement.profileSought}}</span>
+            <span>{{ selectedAnnouncement.requiredProfile }}</span>
           </div>
         </div>
       }
@@ -178,11 +178,21 @@
     </div>
     <!-- ✅ FIN DU WRAPPER SCROLLABLE -->
 
-    <div class="modal-footer">
-      <button class="close-modal-btn" (click)="closeDetails()">
-        Fermer
-      </button>
-    </div>
+  <div class="modal-footer">
+
+  <button
+    class="delete-btn"
+    (click)="deleteAnnouncement()">
+    Supprimer
+  </button>
+
+  <button
+    class="close-modal-btn"
+    (click)="closeDetails()">
+    Fermer
+  </button>
+
+</div>
 
   </div>
 

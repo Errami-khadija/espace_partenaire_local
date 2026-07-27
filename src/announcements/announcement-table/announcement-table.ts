@@ -91,30 +91,52 @@ editAnnouncement(announcement: Announcement): void {
 
 archiveAnnouncement(announcement: Announcement): void {
 
-    Swal.fire({
-      title: 'Archiver cette annonce ?',
-      text: 'Cette action changera le statut en "Archivée".',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Oui, archiver',
-      cancelButtonText: 'Annuler'
-    }).then((result) => {
+  Swal.fire({
+    title: 'Archiver cette annonce ?',
+    text: 'Cette action changera le statut en "Archivée".',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Oui, archiver',
+    cancelButtonText: 'Annuler'
+  }).then((result) => {
 
-      if (result.isConfirmed) {
+    if (result.isConfirmed) {
 
-        announcement.status = 'archived';
+      this.announcementService
+        .archiveAnnouncement(announcement.id!)
+        .subscribe({
 
-        Swal.fire({
-          icon: 'success',
-          title: 'Annonce archivée',
-          text: 'L’annonce a été archivée avec succès.'
+          next: (updatedAnnouncement) => {
+
+            announcement.status = updatedAnnouncement.status;
+
+            Swal.fire({
+              icon: 'success',
+              title: 'Annonce archivée',
+              text: 'L’annonce a été archivée avec succès.'
+            });
+
+          },
+
+          error: (error) => {
+
+            console.error(error);
+
+            Swal.fire({
+              icon: 'error',
+              title: 'Erreur',
+              text: "Impossible d'archiver l'annonce."
+            });
+
+          }
+
         });
 
-      }
+    }
 
-    });
+  });
 
-  }
+}
 
 viewAnnouncementDetails(announcement: Announcement): void {
   this.viewDetails.emit(announcement);

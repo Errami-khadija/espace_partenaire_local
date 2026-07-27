@@ -28,6 +28,13 @@ export class AnnouncementService {
     return this.http.put<Announcement>(`${this.apiUrl}/${id}`, data);
   }
 
+  archiveAnnouncement(id: number): Observable<Announcement> {
+  return this.http.patch<Announcement>(
+    `${this.apiUrl}/${id}/archiver`,
+    {}
+  );
+}
+
   deleteAnnouncement(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }

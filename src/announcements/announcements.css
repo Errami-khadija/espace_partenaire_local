@@ -404,7 +404,9 @@ h1 {
   transform: rotate(90deg) scale(0.95);
 }
 
-/* ✅ Padding pour le contenu scrollable */
+
+
+/* Padding pour le contenu scrollable */
 .modal-content.details-modal .details-grid {
   padding: 32px;
   display: grid;
@@ -544,6 +546,36 @@ h1 {
   transform: translateY(0) scale(0.98);
 }
 
+/* Bouton Supprimer dans le footer */
+.modal-content.details-modal .delete-btn {
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 12px 28px;
+  border: 1px solid #fca5a5;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  background: #fef2f2;
+  color: #dc2626;
+  box-shadow: 0 2px 6px rgba(220, 38, 38, 0.08);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content.details-modal .delete-btn:hover {
+  background: #dc2626;
+  color: #ffffff;
+  border-color: #dc2626;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(220, 38, 38, 0.25);
+}
+
+.modal-content.details-modal .delete-btn:active {
+  transform: translateY(0) scale(0.98);
+}
 /* ========================================
    RESPONSIVE
    ======================================== */

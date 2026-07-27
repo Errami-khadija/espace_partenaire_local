@@ -34,6 +34,11 @@ export class AnnouncementForm implements OnChanges {
 
   showPreview = false;
 
+isEditMode = false;
+editingAnnouncementId?: number;
+
+existingAttachments: string[] = [];
+
  constructor(
   private fb: FormBuilder,
   private sanitizer: DomSanitizer,
@@ -133,7 +138,7 @@ export class AnnouncementForm implements OnChanges {
     );
 
     this.announcementForm.addControl(
-      'profileSought',
+      'requiredProfile',
       this.fb.control('', Validators.required)
     );
 
@@ -176,6 +181,9 @@ onFileSelected(event: any) {
 
   });
 
+
+  this.existingAttachments = [];
+
 }
 
 
@@ -193,7 +201,7 @@ removeSpecificFields() {
     'estimatedROI',
     'projectDuration',
     'collaborationType',
-    'profileSought',
+    'requiredProfile',
     'tourismProjectType',
     'capacity'
   ];
@@ -263,28 +271,34 @@ submit(): void {
 
   const announcement: Announcement = {
     ...this.announcementForm.value,
-
     status: 'pending',
     views: 0,
     attachments: this.selectedFiles.map(file => file.name),
     rejectionReason: ''
   };
 
-  this.announcementService.createAnnouncement(announcement)
-    .subscribe({
+  if (this.isEditMode) {
+
+    this.announcementService.updateAnnouncement(
+      this.editingAnnouncementId!,
+      announcement
+    ).subscribe({
 
       next: () => {
 
         Swal.fire({
           icon: 'success',
           title: 'Succès',
-          text: 'Annonce créée avec succès.'
+          text: 'Annonce mise à jour avec succès.'
         });
 
         this.announcementForm.reset();
         this.selectedFiles = [];
         this.selectedType = '';
         this.showPreview = false;
+        this.isEditMode = false;
+        this.editingAnnouncementId = undefined;
+        this.existingAttachments = [];
 
       },
 
@@ -295,15 +309,50 @@ submit(): void {
         Swal.fire({
           icon: 'error',
           title: 'Erreur',
-          text: 'Impossible de créer l’annonce.'
+          text: 'Impossible de mettre à jour l’annonce.'
         });
 
       }
 
     });
 
-}
+  } else {
 
+    this.announcementService.createAnnouncement(announcement)
+      .subscribe({
+
+        next: () => {
+
+          Swal.fire({
+            icon: 'success',
+            title: 'Succès',
+            text: 'Annonce créée avec succès.'
+          });
+
+          this.announcementForm.reset();
+          this.selectedFiles = [];
+          this.selectedType = '';
+          this.showPreview = false;
+
+        },
+
+        error: (error) => {
+
+          console.error(error);
+
+          Swal.fire({
+            icon: 'error',
+            title: 'Erreur',
+            text: 'Impossible de créer l’annonce.'
+          });
+
+        }
+
+      });
+
+  }
+
+}
 
 ngOnChanges(changes: SimpleChanges): void {
 
@@ -312,6 +361,10 @@ ngOnChanges(changes: SimpleChanges): void {
     this.selectedType = this.announcement.type;
 
     this.updateSpecificFields(this.announcement.type);
+     this.isEditMode = true;
+    this.editingAnnouncementId = this.announcement.id;
+
+  this.existingAttachments = this.announcement.attachments ?? [];
 
     this.announcementForm.patchValue({
 
@@ -327,7 +380,7 @@ ngOnChanges(changes: SimpleChanges): void {
       projectDuration: this.announcement.projectDuration,
 
       collaborationType: this.announcement.collaborationType,
-      profileSought: this.announcement.profileSought,
+      requiredProfile: this.announcement.requiredProfile,
 
       tourismProjectType: this.announcement.tourismProjectType,
       capacity: this.announcement.capacity

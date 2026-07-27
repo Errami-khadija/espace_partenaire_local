@@ -1,6 +1,7 @@
 package com.espacepartenairelocal.backend.service;
 
 import com.espacepartenairelocal.backend.entity.Announcement;
+import com.espacepartenairelocal.backend.enums.AnnouncementStatus;
 import com.espacepartenairelocal.backend.exception.ResourceNotFoundException;
 import com.espacepartenairelocal.backend.repository.AnnouncementRepository;
 import org.springframework.stereotype.Service;
@@ -88,4 +89,14 @@ public class AnnouncementService {
 
         announcementRepository.delete(announcement);
     }
+
+    public Announcement archiveAnnouncement(Long id) {
+
+    Announcement announcement = announcementRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Annonce introuvable"));
+
+    announcement.setStatus(AnnouncementStatus.archived);
+
+    return announcementRepository.save(announcement);
+}
 }
