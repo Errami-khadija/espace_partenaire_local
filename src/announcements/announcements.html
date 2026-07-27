@@ -110,7 +110,7 @@
 
         <div class="detail-item">
           <label>Date</label>
-          <span>{{ selectedAnnouncement.date }}</span>
+          <span>{{ selectedAnnouncement.createdAt}}</span>
         </div>
       </div>
 
@@ -121,7 +121,7 @@
         <div class="details-grid">
           <div class="detail-item">
             <label>Montant recherché</label>
-            <span>{{ selectedAnnouncement.investmentAmount }} DT</span>
+            <span>{{ selectedAnnouncement.amountSought }} DT</span>
           </div>
           <div class="detail-item">
             <label>ROI estimé</label>
@@ -145,7 +145,7 @@
           </div>
           <div class="detail-item">
             <label>Profil recherché</label>
-            <span>{{ selectedAnnouncement.requiredProfile }}</span>
+            <span>{{ selectedAnnouncement.profileSought}}</span>
           </div>
         </div>
       }

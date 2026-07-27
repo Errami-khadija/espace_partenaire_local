@@ -12,12 +12,12 @@
         
         <div class="form-group">
           <label>Type d'annonce</label>
-          <select formControlName="announcementType">
-            <option value="">-- Sélectionner --</option>
-            <option value="investment">Investissement</option>
-            <option value="collaboration">Collaboration</option>
-            <option value="tourism">Tourisme</option>
-          </select>
+         <select formControlName="type">
+  <option value="">-- Sélectionner --</option>
+  <option value="investment">Investissement</option>
+  <option value="collaboration">Collaboration</option>
+  <option value="tourism">Tourisme</option>
+</select>
         </div>
 
         <div class="form-group">
@@ -67,15 +67,15 @@
         @if (selectedType === 'investment') {
           <div class="form-group">
             <label>Montant recherché</label>
-            <input type="text" formControlName="investmentAmount">
+            <input type="text" formControlName="amountSought">
              @if (
-            announcementForm.get('investmentAmount')?.invalid &&
-            announcementForm.get('investmentAmount')?.touched
+            announcementForm.get('amountSought')?.invalid &&
+            announcementForm.get('amountSought')?.touched
           ) {
-            @if (announcementForm.get('investmentAmount')?.errors?.['required']) {
+            @if (announcementForm.get('amountSought')?.errors?.['required']) {
               <small>Le montant recherché est obligatoire.</small>
             }
-            @if (announcementForm.get('investmentAmount')?.errors?.['pattern']) {
+            @if (announcementForm.get('amountSought')?.errors?.['pattern']) {
               <small>Format invalide.</small>
             }
           }
@@ -132,16 +132,16 @@
 
            <div class="form-group">
             <label>Profil requis</label>
-            <input type="text" formControlName="requiredProfile">
+            <input type="text" formControlName="profileSought">
 
              @if (
-            announcementForm.get('requiredProfile')?.invalid &&
-            announcementForm.get('requiredProfile')?.touched
+            announcementForm.get('profileSought')?.invalid &&
+            announcementForm.get('profileSought')?.touched
           ) {
-            @if (announcementForm.get('requiredProfile')?.errors?.['required']) {
+            @if (announcementForm.get('profileSought')?.errors?.['required']) {
               <small>Le profil requis est obligatoire.</small>
             }
-            @if (announcementForm.get('requiredProfile')?.errors?.['minlength']) {
+            @if (announcementForm.get('profileSought')?.errors?.['minlength']) {
               <small>Minimum 3 caractères.</small>
             }
           }
@@ -269,9 +269,10 @@
 
 @if (showPreview) {
 
-  <app-announcement-preview
-    [announcement]="announcementForm.value"
-     [selectedFiles]="selectedFiles">
-  </app-announcement-preview>
-
+ <app-announcement-preview
+  [announcement]="announcementForm.value"
+  [selectedFiles]="selectedFiles"
+  (back)="editForm()"
+  (submit)="submit()">
+</app-announcement-preview>
 }

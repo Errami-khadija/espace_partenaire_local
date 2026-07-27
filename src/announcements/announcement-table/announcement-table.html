@@ -19,7 +19,7 @@
       <th (click)="sort('views')">
   Vues
 </th>
-      <th (click)="sort('date')">
+      <th (click)="sort('createdAt')">
   Date
 </th>
       <th>Actions</th>
@@ -71,7 +71,9 @@
 
         <td data-label="Vues">{{ announcement.views }}</td>
 
-        <td data-label="Date">{{ announcement.date }}</td>
+        <td data-label="Date">
+  {{ announcement.createdAt}}
+</td>
 
         <td data-label="Actions" class="actions">
 

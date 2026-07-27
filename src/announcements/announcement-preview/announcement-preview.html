@@ -3,11 +3,11 @@
   <div class="preview-header">
     <h2 class="preview-title">Aperçu de l'annonce</h2>
     <span class="announcement-type">
-      {{ announcement()?.announcementType }}
+      {{ announcement()?.type }}
     </span>
   </div>
 
-  <!-- ✅ WRAPPER SCROLLABLE -->
+  <!--  WRAPPER SCROLLABLE -->
   <div class="preview-scrollable">
 
     <!-- IMAGE PRINCIPALE EN HAUT -->
@@ -100,9 +100,29 @@
         </div>
       }
 
+      
+
     </div>
 
+    <div class="preview-actions">
+
+  <button
+    type="button"
+    class="btn-secondary"
+    (click)="back.emit()">
+    Modifier
+  </button>
+
+  <button
+    type="button"
+    class="btn-primary"
+    (click)="submit.emit()">
+    Soumettre pour validation
+  </button>
+
+</div>
   </div>
+
 
 
 </div>

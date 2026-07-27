@@ -331,6 +331,71 @@
   flex: 1;
 }
 
+/* Container alignment */
+.preview-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end; 
+  gap: 12px;
+  width: 96%;
+  margin-top: 24px;
+  margin-bottom: 16px;
+  
+}
+
+/* Common Base Styles */
+.btn-primary,
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 22px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  outline: none;
+}
+
+/* Secondary Button (Modifier) - Light outline/subtle style */
+.btn-secondary {
+  background-color: #ffffff;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.btn-secondary:hover {
+  background-color: #f8fafc;
+  color: #1e293b;
+  border-color: #94a3b8;
+}
+
+/* Primary Button (Soumettre) - Platform Gradient */
+.btn-primary {
+  background: linear-gradient(135deg, #2bb5a4, #1d88af);
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 4px 12px rgba(43, 181, 164, 0.3);
+}
+
+.btn-primary:hover:not(:disabled) {
+  opacity: 0.92;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(43, 181, 164, 0.4);
+}
+
+/* Disabled State */
+.btn-primary:disabled,
+.btn-secondary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .preview-container {

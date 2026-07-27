@@ -1,6 +1,7 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { NgClass } from '@angular/common';
 import Swal from 'sweetalert2';
+import { AnnouncementService } from '../../app/services/announcement';
 
 import { Announcement } from '../../app/models/announcement.model';
 type SortableColumn =
@@ -9,7 +10,7 @@ type SortableColumn =
   | 'sector'
   | 'status'
   | 'views'
-  | 'date';
+  | 'createdAt';
 
 @Component({
   selector: 'app-announcement-table',
@@ -20,93 +21,35 @@ type SortableColumn =
 })
 
 
-export class AnnouncementTable {
+export class AnnouncementTable implements OnInit {
 
 @Output() edit = new EventEmitter<Announcement>();
 @Output() viewDetails = new EventEmitter<Announcement>();
 
-  announcements: Announcement[] = [
-  {
-    id: 1,
-    title: 'Complexe touristique à Hammamet',
-    description: 'Projet de création d’un complexe touristique comprenant un hôtel, un centre de bien-être et des espaces de loisirs.',
-    type: 'investment',
-    sector: 'Tourisme',
-    region: 'Hammamet',
-    contact: '20123456',
-    status: 'published',
-    views: 245,
-    date: '20/07/2026',
-    investmentAmount: 5000000,
-    estimatedROI: 12,
-    projectDuration: '24 mois',
-    attachments: []
-  },
-  {
-    id: 2,
-    title: 'Recherche partenaire pour une plateforme FinTech',
-    description: 'Recherche d’un partenaire technologique pour développer une plateforme de services financiers numériques.',
-    type: 'collaboration',
-    sector: 'Technologie',
-    region: 'Tunis',
-    contact: '22123456',
-    status: 'pending',
-    views: 53,
-    date: '18/07/2026',
-    collaborationType: 'Partenariat stratégique',
-    requiredProfile: 'Entreprise spécialisée en FinTech',
-    attachments: []
-  },
-  {
-    id: 3,
-    title: 'Projet de ferme oléicole à Sfax',
-    description: 'Développement d’une exploitation oléicole moderne avec unité de transformation et d’exportation.',
-    type: 'investment',
-    sector: 'Agriculture',
-    region: 'Sfax',
-    contact: '23123456',
-    status: 'draft',
-    views: 0,
-    date: '15/07/2026',
-    investmentAmount: 1800000,
-    estimatedROI: 10,
-    projectDuration: '18 mois',
-    attachments: []
-  },
-  {
-    id: 4,
-    title: 'Circuit culturel à Carthage',
-    description: 'Organisation d’un circuit touristique mettant en valeur les sites historiques et culturels de Carthage.',
-    type: 'tourism',
-    sector: 'Culture & Tourisme',
-    region: 'Carthage',
-    contact: '24123456',
-    status: 'rejected',
-    views: 67,
-    date: '12/07/2026',
-    tourismProjectType: 'Circuit culturel',
-    capacity: 80,
-    rejectionReason: 'Le dossier est incomplet. Merci de fournir une étude de faisabilité et un budget détaillé.',
-    attachments: []
-  },
-  {
-    id: 5,
-    title: 'Extension d’une unité industrielle à Bizerte',
-    description: 'Extension d’une usine de fabrication afin d’augmenter la capacité de production destinée à l’export.',
-    type: 'investment',
-    sector: 'Industrie',
-    region: 'Bizerte',
-    contact: '25123456',
-    status: 'archived',
-    views: 120,
-    date: '10/07/2026',
-    investmentAmount: 3200000,
-    estimatedROI: 15,
-    projectDuration: '30 mois',
-    attachments: []
-  }
-];
+constructor(private announcementService: AnnouncementService) {}
 
+  announcements: Announcement[] = [];
+
+  ngOnInit(): void {
+  this.loadAnnouncements();
+}
+
+loadAnnouncements(): void {
+  this.announcementService.getAllAnnouncements().subscribe({
+    next: (data) => {
+      this.announcements = data;
+    },
+    error: (error) => {
+      console.error(error);
+
+      Swal.fire({
+        icon: 'error',
+        title: 'Erreur',
+        text: 'Impossible de charger les annonces.'
+      });
+    }
+  });
+}
 
 
 sortColumn: SortableColumn = 'title';

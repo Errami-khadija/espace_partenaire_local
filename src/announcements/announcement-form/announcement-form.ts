@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import Swal from 'sweetalert2';
 import { AnnouncementPreview } from '../announcement-preview/announcement-preview';
 import { Announcement } from '../../app/models/announcement.model';
+import { AnnouncementService } from '../../app/services/announcement';
 import {
   Component,
   EventEmitter,
@@ -23,6 +24,7 @@ import {
 export class AnnouncementForm implements OnChanges {
     @Output() close = new EventEmitter<void>();
     @Input() announcement?: Announcement;
+    filePreviews = new Map<File, any>();
 
   announcementForm!: FormGroup;
 
@@ -32,195 +34,201 @@ export class AnnouncementForm implements OnChanges {
 
   showPreview = false;
 
-  constructor(private fb: FormBuilder, private sanitizer: DomSanitizer) {
+ constructor(
+  private fb: FormBuilder,
+  private sanitizer: DomSanitizer,
+  private announcementService: AnnouncementService
+) {
 
-    this.announcementForm = this.fb.group({
+  this.announcementForm = this.fb.group({
 
-      // champ commun
-      announcementType: ['', Validators.required],
-      title: [
-    '',
-    [
-      Validators.required,
-      Validators.minLength(3)
+    // Common fields
+    type: ['', Validators.required],
+
+    title: [
+      '',
+      [
+        Validators.required,
+        Validators.minLength(3)
+      ]
+    ],
+
+    description: [
+      '',
+      [
+        Validators.required,
+        Validators.minLength(10)
+      ]
+    ],
+
+    sector: [
+      '',
+      Validators.required
+    ],
+
+    region: [
+      '',
+      Validators.required
+    ],
+
+    contact: [
+      '',
+      [
+        Validators.required,
+        Validators.pattern(/^[0-9]{8}$/)
+      ]
     ]
-  ],
 
-  description: [
-    '',
-    [
-      Validators.required,
-      Validators.minLength(10)
-    ]
-  ],
+  });
 
-  sector: [
-    '',
-    Validators.required
-  ],
+  // Listen for type changes
+  this.announcementForm
+    .get('type')
+    ?.valueChanges
+    .subscribe(type => {
 
-  region: [
-    '',
-    Validators.required
-  ],
+      this.selectedType = type;
 
-  contact: [
-    '',
-    [
-      Validators.required,
-      Validators.pattern(/^[0-9]{8}$/)
-    ]
-  ]
+      this.updateSpecificFields(type);
 
     });
 
-
-    // field spécifique en fonction du type d'annonce
-    this.announcementForm
-      .get('announcementType')
-      ?.valueChanges
-      .subscribe(type => {
-
-        this.selectedType = type;
-
-        this.updateSpecificFields(type);
-
-      });
-
-  }
-
+}
 
   updateSpecificFields(type: string) {
 
-    // retirer les champs spécifiques avant d'ajouter les nouveaux
-    this.removeSpecificFields();
+  // Remove previous dynamic fields
+  this.removeSpecificFields();
 
+  if (type === 'investment') {
 
- if(type === 'investment') {
+    this.announcementForm.addControl(
+      'amountSought',
+      this.fb.control('', [
+        Validators.required,
+        Validators.pattern('^[0-9]+$')
+      ])
+    );
 
-  this.announcementForm.addControl(
-    'investmentAmount',
-    this.fb.control('',  [
-    Validators.required,
-    Validators.pattern('^[0-9]+$')
-  ])
-  );
+    this.announcementForm.addControl(
+      'estimatedROI',
+      this.fb.control('', [
+        Validators.required,
+        Validators.pattern('^[0-9]+(\\.[0-9]+)?$')
+      ])
+    );
 
-  this.announcementForm.addControl(
-    'estimatedROI',
-    this.fb.control('', [
-    Validators.required,
-    Validators.pattern('^[0-9]+(\\.[0-9]+)?$')
-  ])
-  );
+    this.announcementForm.addControl(
+      'projectDuration',
+      this.fb.control('', Validators.required)
+    );
 
-  this.announcementForm.addControl(
-    'projectDuration',
-    this.fb.control('', Validators.required)
-  );
+  }
+
+  if (type === 'collaboration') {
+
+    this.announcementForm.addControl(
+      'collaborationType',
+      this.fb.control('', Validators.required)
+    );
+
+    this.announcementForm.addControl(
+      'profileSought',
+      this.fb.control('', Validators.required)
+    );
+
+  }
+
+  if (type === 'tourism') {
+
+    this.announcementForm.addControl(
+      'tourismProjectType',
+      this.fb.control('', Validators.required)
+    );
+
+    this.announcementForm.addControl(
+      'capacity',
+      this.fb.control('', [
+        Validators.required,
+        Validators.pattern('^[0-9]+$')
+      ])
+    );
+
+  }
+
+}
+onFileSelected(event: any) {
+
+  const files = event.target.files;
+
+  this.selectedFiles = Array.from(files);
+
+  this.filePreviews.clear();
+
+  this.selectedFiles.forEach(file => {
+
+    const url = URL.createObjectURL(file);
+
+    this.filePreviews.set(
+      file,
+      this.sanitizer.bypassSecurityTrustResourceUrl(url)
+    );
+
+  });
 
 }
 
 
-    if(type === 'collaboration') {
+getFilePreview(file: File) {
 
-      this.announcementForm.addControl(
-        'collaborationType',
-        this.fb.control('', Validators.required)
-      );
+  return this.filePreviews.get(file);
 
-      this.announcementForm.addControl(
-        'requiredProfile',
-        this.fb.control('', Validators.required)
-      );
+}
 
+
+removeSpecificFields() {
+
+  const fields = [
+    'amountSought',
+    'estimatedROI',
+    'projectDuration',
+    'collaborationType',
+    'profileSought',
+    'tourismProjectType',
+    'capacity'
+  ];
+
+  fields.forEach(field => {
+
+    if (this.announcementForm.contains(field)) {
+      this.announcementForm.removeControl(field);
     }
 
-
-   if(type === 'tourism') {
-
-  this.announcementForm.addControl(
-    'tourismProjectType',
-    this.fb.control('', Validators.required)
-  );
-
-  this.announcementForm.addControl(
-    'capacity',
-    this.fb.control('', [
-      Validators.required,
-      Validators.pattern('^[0-9]+$')
-    ])
-  );
+  });
 
 }
-
-  }
-
-   onFileSelected(event: any) {
-
-    const files = event.target.files;
-
-    this.selectedFiles = Array.from(files);
-
-    console.log(this.selectedFiles);
-
-  }
-
-
- getFilePreview(file: File) {
-
-  const url = URL.createObjectURL(file);
-
-  return this.sanitizer.bypassSecurityTrustResourceUrl(url);
-
-}
-
-
-  removeSpecificFields() {
-
-    const fields = [
-      'investmentAmount',
-      'estimatedROI',
-      'projectDuration',
-      'collaborationType',
-      'requiredProfile',
-      'tourismProjectType',
-      'capacity'
-    ];
-
-
-    fields.forEach(field => {
-
-      if(this.announcementForm.contains(field)) {
-        this.announcementForm.removeControl(field);
-      }
-
-    });
-
-  }
 
 saveDraft(): void {
 
-  const draftAnnouncement = {
+  const draftAnnouncement: Partial<Announcement> = {
     ...this.announcementForm.value,
-    status: 'draft',
-    savedAt: new Date()
+    status: 'draft'
   };
 
   console.log('Annonce sauvegardée en brouillon :', draftAnnouncement);
 
   const Toast = Swal.mixin({
-  toast: true,
-  position: 'top-end',
-  showConfirmButton: false,
-  timer: 3000,
-  timerProgressBar: true
-});
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true
+  });
 
-Toast.fire({
-  icon: 'success',
-  title: 'Brouillon sauvegardé avec succès'
-});
+  Toast.fire({
+    icon: 'success',
+    title: 'Brouillon sauvegardé avec succès'
+  });
 
 }
 
@@ -246,68 +254,87 @@ closeForm() {
   this.close.emit();
 }
 
-submit() {
+submit(): void {
 
-  console.log("Form value:", this.announcementForm.value);
+  if (this.announcementForm.invalid) {
+    this.announcementForm.markAllAsTouched();
+    return;
+  }
 
-  console.log("Selected files:", this.selectedFiles);
+  const announcement: Announcement = {
+    ...this.announcementForm.value,
 
+    status: 'pending',
+    views: 0,
+    attachments: this.selectedFiles.map(file => file.name),
+    rejectionReason: ''
+  };
 
-  const formData = new FormData();
+  this.announcementService.createAnnouncement(announcement)
+    .subscribe({
 
+      next: () => {
 
-  Object.keys(this.announcementForm.value).forEach(key => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Succès',
+          text: 'Annonce créée avec succès.'
+        });
 
-    formData.append(
-      key,
-      this.announcementForm.value[key]
-    );
+        this.announcementForm.reset();
+        this.selectedFiles = [];
+        this.selectedType = '';
+        this.showPreview = false;
 
-  });
+      },
 
+      error: (error) => {
 
-  this.selectedFiles.forEach(file => {
+        console.error(error);
 
-    formData.append(
-      'attachments',
-      file
-    );
+        Swal.fire({
+          icon: 'error',
+          title: 'Erreur',
+          text: 'Impossible de créer l’annonce.'
+        });
 
-  });
+      }
 
-
-  console.log("FormData ready");
+    });
 
 }
 
+
 ngOnChanges(changes: SimpleChanges): void {
 
-    if (changes['announcement'] && this.announcement) {
+  if (changes['announcement'] && this.announcement) {
 
-      this.selectedType = this.announcement.type;
+    this.selectedType = this.announcement.type;
 
-      this.updateSpecificFields(this.announcement.type);
+    this.updateSpecificFields(this.announcement.type);
 
-      this.announcementForm.patchValue({
-        announcementType: this.announcement.type,
-        title: this.announcement.title,
-        description: this.announcement.description,
-        sector: this.announcement.sector,
-        region: this.announcement.region,
-        contact: this.announcement.contact,
+    this.announcementForm.patchValue({
 
-        investmentAmount: this.announcement.investmentAmount,
-        estimatedROI: this.announcement.estimatedROI,
-        projectDuration: this.announcement.projectDuration,
+      type: this.announcement.type,
+      title: this.announcement.title,
+      description: this.announcement.description,
+      sector: this.announcement.sector,
+      region: this.announcement.region,
+      contact: this.announcement.contact,
 
-        collaborationType: this.announcement.collaborationType,
-        requiredProfile: this.announcement.requiredProfile,
+      amountSought: this.announcement.amountSought,
+      estimatedROI: this.announcement.estimatedROI,
+      projectDuration: this.announcement.projectDuration,
 
-        tourismProjectType: this.announcement.tourismProjectType,
-        capacity: this.announcement.capacity
-      });
+      collaborationType: this.announcement.collaborationType,
+      profileSought: this.announcement.profileSought,
 
-    }
+      tourismProjectType: this.announcement.tourismProjectType,
+      capacity: this.announcement.capacity
+
+    });
 
   }
+
+}
 }

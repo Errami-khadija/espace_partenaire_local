@@ -1,54 +1,35 @@
 export interface Announcement {
 
-  // Informations générales
-  id: number;
+  id?: number;
 
   title: string;
-
   description: string;
 
   type: 'investment' | 'collaboration' | 'tourism';
 
   sector: string;
-
   region: string;
 
   contact: string;
 
-
-  // Statistiques
   status: 'draft' | 'pending' | 'published' | 'rejected' | 'archived';
 
   views: number;
 
-  date: string;
+  createdAt?: string;
+  updatedAt?: string;
 
-
-  // Pièces jointes
   attachments?: string[];
 
-
-  // Champs Investissement
-  investmentAmount?: number;
-
+  amountSought?: number;
   estimatedROI?: number;
+  projectDuration?: number;
 
-  projectDuration?: string;
-
-
-  // Champs Collaboration
   collaborationType?: string;
+  profileSought?: string;
 
-  requiredProfile?: string;
-
-
-  // Champs Tourisme
   tourismProjectType?: string;
-
   capacity?: number;
 
-
-  // Motif du rejet
   rejectionReason?: string;
-
 }
