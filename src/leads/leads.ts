@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Lead } from '../app/models/lead.model';
+import { LeadService } from '../app/services/lead';
 import { 
   LucideMessageCircle, 
   LucideMoreVertical, 
@@ -8,13 +10,6 @@ import {
 } from '@lucide/angular';
 import Swal from 'sweetalert2';
 
-interface Lead {
-  id: string;
-  annonce: string;
-  pays: string;
-  date: Date;
-  statut: 'Nouveau' | 'Contacté' | 'En Négociation';
-}
 
 interface Stat {
   annonce: string;
@@ -36,21 +31,43 @@ interface Stat {
   styleUrl: './leads.css',
 })
 export class Leads implements OnInit {
-  leads: Lead[] = [
-    { id: 'L-001', annonce: 'Villa de luxe à Marrakech', pays: 'France', date: new Date('2026-07-20'), statut: 'Nouveau' },
-    { id: 'L-002', annonce: 'Appartement vue mer Tanger', pays: 'Espagne', date: new Date('2026-07-19'), statut: 'Contacté' },
-    { id: 'L-003', annonce: 'Villa de luxe à Marrakech', pays: 'Belgique', date: new Date('2026-07-18'), statut: 'En Négociation' },
-    { id: 'L-004', annonce: 'Riad au centre de Fès', pays: 'Royaume-Uni', date: new Date('2026-07-17'), statut: 'Nouveau' },
-    { id: 'L-005', annonce: 'Appartement vue mer Tanger', pays: 'Italie', date: new Date('2026-07-16'), statut: 'Contacté' },
-    { id: 'L-006', annonce: 'Villa de luxe à Marrakech', pays: 'Émirats Arabes Unis', date: new Date('2026-07-15'), statut: 'Nouveau' },
-    { id: 'L-007', annonce: 'Terrain constructible Casablanca', pays: 'Suisse', date: new Date('2026-07-14'), statut: 'En Négociation' }
-  ];
+
+    constructor(private leadService: LeadService) {}
+
+ leads: Lead[] = [];
 
   stats: Stat[] = [];
 
-  ngOnInit() {
-    this.calculateStats();
-  }
+ngOnInit(): void {
+  this.loadLeads();
+}
+
+loadLeads(): void {
+
+  this.leadService.getAllLeads().subscribe({
+
+    next: (data) => {
+
+      this.leads = data;
+      this.calculateStats();
+
+    },
+
+    error: (error) => {
+
+      console.error(error);
+
+      Swal.fire({
+        icon: 'error',
+        title: 'Erreur',
+        text: 'Impossible de charger les leads.'
+      });
+
+    }
+
+  });
+
+}
 
   calculateStats() {
     const counts = this.leads.reduce((acc, lead) => {
@@ -67,14 +84,45 @@ export class Leads implements OnInit {
     })).sort((a, b) => b.count - a.count);
   }
 
-  getStatutClass(statut: string): string {
-    switch (statut) {
-      case 'Nouveau': return 'statut-nouveau';
-      case 'Contacté': return 'statut-contacte';
-      case 'En Négociation': return 'statut-negociation';
-      default: return '';
-    }
+getStatutClass(statut: string): string {
+
+  switch (statut) {
+
+    case 'NOUVEAU':
+      return 'statut-nouveau';
+
+    case 'CONTACTE':
+      return 'statut-contacte';
+
+    case 'EN_NEGOCIATION':
+      return 'statut-negociation';
+
+    default:
+      return '';
+
   }
+
+}
+
+getStatutLabel(statut: string): string {
+
+  switch (statut) {
+
+    case 'NOUVEAU':
+      return 'Nouveau';
+
+    case 'CONTACTE':
+      return 'Contacté';
+
+    case 'EN_NEGOCIATION':
+      return 'En Négociation';
+
+    default:
+      return statut;
+
+  }
+
+}
 
   contacter(lead: Lead) {
     Swal.fire({
@@ -96,7 +144,7 @@ export class Leads implements OnInit {
           icon: 'success',
           confirmButtonColor: '#4f46e5'
         });
-        lead.statut = 'Contacté';
+        lead.statut = 'CONTACTE';
       }
     });
   }

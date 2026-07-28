@@ -1,5 +1,7 @@
 import { AfterViewInit, Component, ElementRef, QueryList, ViewChildren } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Input,  OnChanges } from '@angular/core';
+import { StatisticsResponse } from '../../models/statistics.model';
 
 interface KpiItem {
   label: string;
@@ -16,12 +18,11 @@ interface KpiItem {
   styleUrl: './kpi-stats.css',
 })
 export class KpiStats implements AfterViewInit {
+
+  @Input() statistics!: StatisticsResponse;
   @ViewChildren('animatedValue') private animatedValues!: QueryList<ElementRef<HTMLHeadingElement>>;
 
-  protected readonly stats: KpiItem[] = [
-    { label: 'Total views', value: '42,580', delta: '+12.4% vs last month', tone: 'positive' },
-    { label: 'Total leads', value: '1,248', delta: '+8.1% vs last month', tone: 'positive' }
-  ];
+ protected stats: KpiItem[] = [];
 
   ngAfterViewInit(): void {
     if (typeof globalThis.requestAnimationFrame !== 'function') {
@@ -85,4 +86,27 @@ export class KpiStats implements AfterViewInit {
 
     return current.toLocaleString();
   }
+
+  ngOnChanges(): void {
+
+  if (!this.statistics) return;
+
+  this.stats = [
+
+    {
+      label: 'Total views',
+      value: this.statistics.totalViews.toLocaleString(),
+      delta: `+${this.statistics.viewsGrowth}% vs last month`,
+      tone: 'positive'
+    },
+
+    {
+      label: 'Total leads',
+      value: this.statistics.totalLeads.toLocaleString(),
+      delta: `+${this.statistics.leadsGrowth}% vs last month`,
+      tone: 'positive'
+    }
+
+  ];
+}
 }

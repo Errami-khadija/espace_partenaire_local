@@ -9,8 +9,9 @@ import com.espacepartenairelocal.backend.dto.DashboardStatsDto;
 import com.espacepartenairelocal.backend.service.DashboardService;
 
 @RestController
-@RequestMapping("/api/dev/local-partner/dashboard")
+// @RequestMapping("/api/dev/local-partner/dashboard")
 @CrossOrigin(origins = "http://localhost:4200")
+@RequestMapping("/api/local-partner/dashboard")
 public class DashboardController {
 
     private final DashboardService dashboardService;
@@ -20,7 +21,7 @@ public class DashboardController {
     }
 
     @GetMapping
-    public DashboardStatsDto getDashboardStats() {
+    public DashboardStatsDto getDashboard() {
         return dashboardService.getDashboardStats();
     }
 }

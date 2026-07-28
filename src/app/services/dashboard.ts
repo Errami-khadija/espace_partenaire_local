@@ -8,7 +8,7 @@ import { DashboardStats } from '../models/dashboard-stats';
 })
 export class DashboardService {
 
-  private apiUrl = 'http://localhost:8080/api/dev/local-partner/dashboard';
+  private apiUrl = 'http://localhost:8080/api/local-partner/dashboard';
 
   constructor(private http: HttpClient) {}
 

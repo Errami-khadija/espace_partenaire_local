@@ -9,6 +9,7 @@ import {
 } from '@angular/forms';
 
 import Swal from 'sweetalert2';
+import { PartnerProfileService } from '../app/services/partner-profile';
 
 @Component({
   selector: 'app-mon-profile',
@@ -25,10 +26,11 @@ export class MonProfile implements OnInit {
   selectedLogo: File | null = null;
   selectedFileName: string = ''; // Stores selected file name for UI display
 
-  constructor(
-    private fb: FormBuilder,
-    private sanitizer: DomSanitizer
-  ) {}
+constructor(
+  private fb: FormBuilder,
+  private sanitizer: DomSanitizer,
+  private partnerProfileService: PartnerProfileService
+) {}
 
   ngOnInit(): void {
     this.profileForm = this.fb.group({
@@ -42,7 +44,53 @@ export class MonProfile implements OnInit {
       address: [''],
       logo: [null]
     });
+      this.loadProfile();
+
+
+     this.partnerProfileService.getProfile().subscribe(profile => {
+    this.profileForm.patchValue(profile);
+  });
   }
+
+  loadProfile(): void {
+
+  this.partnerProfileService.getProfile().subscribe({
+
+    next: (profile) => {
+
+      this.profileForm.patchValue({
+
+        companyName: profile.companyName,
+        sector: profile.sector,
+        region: profile.region,
+        website: profile.website,
+        description: profile.description,
+        email: profile.email,
+        phone: profile.phone,
+        address: profile.address
+
+      });
+
+      // Display existing logo if there is one
+      if (profile.logo) {
+
+        this.selectedFileName = profile.logo;
+
+        this.logoPreview = profile.logo;
+
+      }
+
+    },
+
+    error: (error) => {
+
+      console.error(error);
+
+    }
+
+  });
+
+}
 
   onLogoSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -63,31 +111,52 @@ export class MonProfile implements OnInit {
   }
 
   saveProfile(): void {
-    if (this.profileForm.invalid) {
-      this.profileForm.markAllAsTouched();
+
+  if (this.profileForm.invalid) {
+
+    this.profileForm.markAllAsTouched();
+
+    Swal.fire({
+      icon: 'error',
+      title: 'Erreur',
+      text: 'Veuillez corriger les erreurs avant d’enregistrer.'
+    });
+
+    return;
+  }
+
+  const profileData = {
+    ...this.profileForm.value,
+    logo: this.selectedLogo?.name || ''
+  };
+
+  this.partnerProfileService.updateProfile(profileData).subscribe({
+
+    next: () => {
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Succès',
+        text: 'Le profil partenaire a été enregistré avec succès.',
+        timer: 2000,
+        showConfirmButton: false
+      });
+
+    },
+
+    error: (error) => {
+
+      console.error(error);
 
       Swal.fire({
         icon: 'error',
         title: 'Erreur',
-        text: 'Veuillez corriger les erreurs avant d’enregistrer.'
+        text: 'Impossible de mettre à jour le profil.'
       });
 
-      return;
     }
 
-    const profileData = {
-      ...this.profileForm.value,
-      logo: this.selectedLogo
-    };
+  });
 
-    console.log(profileData);
-
-    Swal.fire({
-      icon: 'success',
-      title: 'Succès',
-      text: 'Le profil partenaire a été enregistré avec succès.',
-      timer: 2000,
-      showConfirmButton: false
-    });
-  }
+}
 }

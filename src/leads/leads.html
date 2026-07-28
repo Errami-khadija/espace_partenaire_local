@@ -60,7 +60,7 @@
               <td class="col-date">{{ lead.date | date:'dd MMM yyyy' }}</td>
               <td>
                 <span class="badge" [ngClass]="getStatutClass(lead.statut)">
-                  {{ lead.statut }}
+                  {{ getStatutLabel(lead.statut) }}
                 </span>
               </td>
               <td>

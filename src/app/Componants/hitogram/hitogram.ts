@@ -1,4 +1,14 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  ViewChild,
+  Input,
+  OnChanges,
+  SimpleChanges
+} from '@angular/core';
+
+import { DailyView } from '../../models/statistics.model';
 
 declare const d3: any;
 
@@ -13,45 +23,37 @@ interface DailyViews {
   templateUrl: './hitogram.html',
   styleUrl: './hitogram.css',
 })
-export class Hitogram implements AfterViewInit {
+export class Hitogram implements AfterViewInit, OnChanges {
   @ViewChild('chart', { static: true }) chartContainer!: ElementRef<HTMLDivElement>;
 
-  protected readonly data: DailyViews[] = [
-    { day: '01', views: 3200 },
-    { day: '02', views: 2900 },
-    { day: '03', views: 3600 },
-    { day: '04', views: 4100 },
-    { day: '05', views: 3050 },
-    { day: '06', views: 3750 },
-    { day: '07', views: 4300 },
-    { day: '08', views: 3900 },
-    { day: '09', views: 4700 },
-    { day: '10', views: 4350 },
-    { day: '11', views: 5100 },
-    { day: '12', views: 4600 },
-    { day: '13', views: 4950 },
-    { day: '14', views: 5250 },
-    { day: '15', views: 4800 },
-    { day: '16', views: 4450 },
-    { day: '17', views: 5300 },
-    { day: '18', views: 5600 },
-    { day: '19', views: 5900 },
-    { day: '20', views: 6100 },
-    { day: '21', views: 5750 },
-    { day: '22', views: 6350 },
-    { day: '23', views: 6800 },
-    { day: '24', views: 7200 },
-    { day: '25', views: 6900 },
-    { day: '26', views: 7500 },
-    { day: '27', views: 7900 },
-    { day: '28', views: 8300 },
-    { day: '29', views: 7700 },
-    { day: '30', views: 8600 },
-  ];
+  @Input() dailyViews: DailyView[] = [];
 
-  ngAfterViewInit(): void {
+protected data: DailyViews[] = [];
+
+ ngAfterViewInit(): void {
+
+  if (this.data.length > 0) {
     this.renderChart();
   }
+
+}
+
+  ngOnChanges(changes: SimpleChanges): void {
+
+  if (changes['dailyViews'] && this.dailyViews.length > 0) {
+
+    this.data = this.dailyViews.map(item => ({
+      day: item.day,
+      views: item.views
+    }));
+
+    if (this.chartContainer) {
+      this.renderChart();
+    }
+
+  }
+
+}
 
   private renderChart(): void {
     const container = this.chartContainer.nativeElement;

@@ -5,6 +5,8 @@ import {
   OnDestroy,
   ViewChild,
 } from '@angular/core';
+import { Input } from '@angular/core';
+import { StatisticsResponse } from '../../models/statistics.model';
 
 declare const d3: any;
 
@@ -17,9 +19,11 @@ declare const d3: any;
 export class DonutPlot implements AfterViewInit, OnDestroy {
   @ViewChild('chart', { static: true }) chartContainer!: ElementRef<HTMLDivElement>;
 
-  protected readonly conversionRateTarget = 18.4;
-  protected readonly leadsTarget = 84;
-  protected readonly viewsTarget = 456;
+  @Input() statistics!: StatisticsResponse;
+
+  protected conversionRateTarget = 0;
+protected leadsTarget = 0;
+protected viewsTarget = 0;
 
   protected conversionDisplay = 0;
   protected leadsDisplay = 0;
@@ -51,6 +55,10 @@ export class DonutPlot implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
+    this.conversionRateTarget = this.statistics.conversionRate;
+this.leadsTarget = this.statistics.conversionLeads;
+this.viewsTarget = this.statistics.conversionViews;
+
     this.renderChart();
     this.startNumberAnimation();
     this.observeResize();

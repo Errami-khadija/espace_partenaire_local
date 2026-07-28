@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StatCard } from './components/stat-card/stat-card';
 import { Router, RouterModule } from '@angular/router';
-import { DashboardStats } from '../app/core/models/dashboard-stats';
-import { DashboardService } from '../app/core/services/dashboard';
+import { DashboardStats } from '../app/models/dashboard-stats';
+import { DashboardService } from '../app/services/dashboard';
 
 
 @Component({

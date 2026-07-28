@@ -218,25 +218,83 @@ removeSpecificFields() {
 
 saveDraft(): void {
 
-  const draftAnnouncement: Partial<Announcement> = {
+  if (this.announcementForm.invalid) {
+    this.announcementForm.markAllAsTouched();
+    return;
+  }
+
+  const announcement: Announcement = {
     ...this.announcementForm.value,
-    status: 'draft'
+    status: 'draft',
+    views: 0,
+    attachments: this.selectedFiles.map(file => file.name),
+    rejectionReason: ''
   };
 
-  console.log('Annonce sauvegardée en brouillon :', draftAnnouncement);
+  if (this.isEditMode) {
 
-  const Toast = Swal.mixin({
-    toast: true,
-    position: 'top-end',
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true
-  });
+    this.announcementService.updateAnnouncement(
+      this.editingAnnouncementId!,
+      announcement
+    ).subscribe({
 
-  Toast.fire({
-    icon: 'success',
-    title: 'Brouillon sauvegardé avec succès'
-  });
+      next: () => {
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Succès',
+          text: 'Brouillon mis à jour avec succès.'
+        });
+
+      },
+
+      error: (error) => {
+
+        console.error(error);
+
+        Swal.fire({
+          icon: 'error',
+          title: 'Erreur',
+          text: 'Impossible de sauvegarder le brouillon.'
+        });
+
+      }
+
+    });
+
+  } else {
+
+    this.announcementService.createAnnouncement(announcement)
+      .subscribe({
+
+        next: (createdAnnouncement) => {
+
+          this.isEditMode = true;
+          this.editingAnnouncementId = createdAnnouncement.id;
+
+          Swal.fire({
+            icon: 'success',
+            title: 'Succès',
+            text: 'Brouillon sauvegardé avec succès.'
+          });
+
+        },
+
+        error: (error) => {
+
+          console.error(error);
+
+          Swal.fire({
+            icon: 'error',
+            title: 'Erreur',
+            text: 'Impossible de sauvegarder le brouillon.'
+          });
+
+        }
+
+      });
+
+  }
 
 }
 
@@ -271,68 +329,116 @@ submit(): void {
 
   const announcement: Announcement = {
     ...this.announcementForm.value,
-    status: 'pending',
+    status: 'draft',
     views: 0,
     attachments: this.selectedFiles.map(file => file.name),
     rejectionReason: ''
   };
 
+  // Existing announcement
   if (this.isEditMode) {
 
-    this.announcementService.updateAnnouncement(
-      this.editingAnnouncementId!,
-      announcement
-    ).subscribe({
-
-      next: () => {
-
-        Swal.fire({
-          icon: 'success',
-          title: 'Succès',
-          text: 'Annonce mise à jour avec succès.'
-        });
-
-        this.announcementForm.reset();
-        this.selectedFiles = [];
-        this.selectedType = '';
-        this.showPreview = false;
-        this.isEditMode = false;
-        this.editingAnnouncementId = undefined;
-        this.existingAttachments = [];
-
-      },
-
-      error: (error) => {
-
-        console.error(error);
-
-        Swal.fire({
-          icon: 'error',
-          title: 'Erreur',
-          text: 'Impossible de mettre à jour l’annonce.'
-        });
-
-      }
-
-    });
-
-  } else {
-
-    this.announcementService.createAnnouncement(announcement)
+    this.announcementService
+      .updateAnnouncement(this.editingAnnouncementId!, announcement)
       .subscribe({
 
         next: () => {
 
+          this.announcementService
+            .submitAnnouncement(this.editingAnnouncementId!)
+            .subscribe({
+
+              next: () => {
+
+                Swal.fire({
+                  icon: 'success',
+                  title: 'Succès',
+                  text: 'Annonce soumise pour validation.'
+                });
+
+                this.announcementForm.reset();
+                this.selectedFiles = [];
+                this.selectedType = '';
+                this.showPreview = false;
+                this.isEditMode = false;
+                this.editingAnnouncementId = undefined;
+                this.existingAttachments = [];
+
+              },
+
+              error: (error) => {
+
+                console.error(error);
+
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Erreur',
+                  text: 'Impossible de soumettre l’annonce.'
+                });
+
+              }
+
+            });
+
+        },
+
+        error: (error) => {
+
+          console.error(error);
+
           Swal.fire({
-            icon: 'success',
-            title: 'Succès',
-            text: 'Annonce créée avec succès.'
+            icon: 'error',
+            title: 'Erreur',
+            text: 'Impossible de mettre à jour l’annonce.'
           });
 
-          this.announcementForm.reset();
-          this.selectedFiles = [];
-          this.selectedType = '';
-          this.showPreview = false;
+        }
+
+      });
+
+  }
+
+  // New announcement
+  else {
+
+    this.announcementService
+      .createAnnouncement(announcement)
+      .subscribe({
+
+        next: (createdAnnouncement) => {
+
+          this.announcementService
+            .submitAnnouncement(createdAnnouncement.id!)
+            .subscribe({
+
+              next: () => {
+
+                Swal.fire({
+                  icon: 'success',
+                  title: 'Succès',
+                  text: 'Annonce créée et soumise pour validation.'
+                });
+
+                this.announcementForm.reset();
+                this.selectedFiles = [];
+                this.selectedType = '';
+                this.showPreview = false;
+
+              },
+
+              error: (error) => {
+
+                console.error(error);
+
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Erreur',
+                  text: 'Impossible de soumettre l’annonce.'
+                });
+
+              }
+
+            });
 
         },
 
@@ -353,7 +459,6 @@ submit(): void {
   }
 
 }
-
 ngOnChanges(changes: SimpleChanges): void {
 
   if (changes['announcement'] && this.announcement) {

@@ -54,6 +54,21 @@ public ResponseEntity<Announcement> updateAnnouncement(
     Announcement updated = announcementService.updateAnnouncement(id, announcement);
     return ResponseEntity.ok(updated);
 }
+@PatchMapping("/{id}/archiver")
+public ResponseEntity<Announcement> archiveAnnouncement(@PathVariable Long id) {
+
+    Announcement archived = announcementService.archiveAnnouncement(id);
+
+    return ResponseEntity.ok(archived);
+}
+
+@PatchMapping("/{id}/soumettre")
+public ResponseEntity<Announcement> submitAnnouncement(@PathVariable Long id) {
+
+    Announcement announcement = announcementService.submitAnnouncement(id);
+
+    return ResponseEntity.ok(announcement);
+}
 
 @DeleteMapping("/{id}")
 public ResponseEntity<Void> deleteAnnouncement(@PathVariable Long id) {
@@ -62,11 +77,5 @@ public ResponseEntity<Void> deleteAnnouncement(@PathVariable Long id) {
 
     return ResponseEntity.noContent().build();
 }
-@PatchMapping("/{id}/archiver")
-public ResponseEntity<Announcement> archiveAnnouncement(@PathVariable Long id) {
 
-    Announcement archived = announcementService.archiveAnnouncement(id);
-
-    return ResponseEntity.ok(archived);
-}
 }

@@ -90,6 +90,26 @@ public class AnnouncementService {
         announcementRepository.delete(announcement);
     }
 
+   public Announcement submitAnnouncement(Long id) {
+
+    Announcement announcement = announcementRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Announcement not found"));
+
+    // Only drafts or rejected announcements can be submitted
+    if (announcement.getStatus() != AnnouncementStatus.draft
+            && announcement.getStatus() != AnnouncementStatus.rejected) {
+
+        throw new IllegalStateException("This announcement cannot be submitted.");
+    }
+
+    announcement.setStatus(AnnouncementStatus.pending);
+
+    // Clear old rejection reason if resubmitting
+    announcement.setRejectionReason(null);
+
+    return announcementRepository.save(announcement);
+}
+
     public Announcement archiveAnnouncement(Long id) {
 
     Announcement announcement = announcementRepository.findById(id)

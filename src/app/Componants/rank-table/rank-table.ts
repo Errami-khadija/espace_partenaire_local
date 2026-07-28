@@ -1,4 +1,8 @@
-import { Component, OnDestroy, OnInit, AfterViewInit, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, AfterViewInit, signal,  Input,
+  OnChanges,
+  SimpleChanges} from '@angular/core';
+
+import { AnnouncementRanking } from '../../models/statistics.model';
 import { CommonModule, DecimalPipe } from '@angular/common';
 
 interface AnnouncementStat {
@@ -15,20 +19,30 @@ interface AnnouncementStat {
   styleUrl: './rank-table.css',
 })
 export class RankTable implements OnInit, AfterViewInit, OnDestroy {
-  protected readonly rows: AnnouncementStat[] = [
-    { name: 'Nouvelle offre premium', leads: 84, views: 12840 },
-    { name: 'Session découverte locale', leads: 71, views: 11620 },
-    { name: 'Service de soutien expert', leads: 63, views: 10490 },
-    { name: 'Formation digitale', leads: 57, views: 9830 },
-    { name: 'Pack accompagnement', leads: 49, views: 9120 },
-    { name: 'Aide juridique rapide', leads: 46, views: 8750 },
-    { name: 'Visite guidée du quartier', leads: 39, views: 8210 },
-    { name: 'Offre famille du mois', leads: 35, views: 7680 },
-    { name: 'Atelier numérique', leads: 31, views: 7120 },
-    { name: 'Programme citoyen', leads: 28, views: 6540 },
-  ];
+  @Input() rankings: AnnouncementRanking[] = [];
 
-  protected readonly sortedRows = [...this.rows].sort((a, b) => b.views - a.views);
+protected rows: AnnouncementStat[] = [];
+
+protected sortedRows: AnnouncementStat[] = [];
+
+ngOnChanges(changes: SimpleChanges): void {
+
+  if (changes['rankings']) {
+
+    this.rows = this.rankings.map(r => ({
+      name: r.title,
+      leads: r.leads,
+      views: r.views
+    }));
+
+    this.sortedRows = [...this.rows].sort((a, b) => b.views - a.views);
+
+    this.animatedLeads.set(this.sortedRows.map(() => 0));
+    this.animatedViews.set(this.sortedRows.map(() => 0));
+
+  }
+
+}
 
   // Signals guarantee UI updates fire even outside Zone.js's patched APIs
   protected readonly animatedLeads = signal<number[]>(this.sortedRows.map(() => 0));
@@ -60,13 +74,17 @@ export class RankTable implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {}
 
   ngAfterViewInit(): void {
-    this.sortedRows.forEach((row, index) => {
-      this.timeoutIds.push(
-        globalThis.setTimeout(() => {
-          this.startRowAnimation(index, row);
-        }, index * 70)
-      );
-    });
+    if (!this.sortedRows.length) {
+  return;
+}
+
+this.sortedRows.forEach((row, index) => {
+  this.timeoutIds.push(
+    setTimeout(() => {
+      this.startRowAnimation(index, row);
+    }, index * 70)
+  );
+});
   }
 
   ngOnDestroy(): void {

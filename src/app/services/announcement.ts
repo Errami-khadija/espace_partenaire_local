@@ -28,6 +28,13 @@ export class AnnouncementService {
     return this.http.put<Announcement>(`${this.apiUrl}/${id}`, data);
   }
 
+  submitAnnouncement(id: number): Observable<Announcement> {
+  return this.http.patch<Announcement>(
+    `${this.apiUrl}/${id}/soumettre`,
+    {}
+  );
+}
+
   archiveAnnouncement(id: number): Observable<Announcement> {
   return this.http.patch<Announcement>(
     `${this.apiUrl}/${id}/archiver`,
