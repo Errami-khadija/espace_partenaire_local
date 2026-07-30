@@ -3,11 +3,11 @@
   "version": 1,
   "cli": {
     "packageManager": "npm",
-    "analytics": "2e4170d2-6631-46c3-951c-3d98b98a40e0"
+    "analytics": "88d320dd-524d-466d-83e5-90806ee18862"
   },
   "newProjectRoot": "projects",
   "projects": {
-    "espace_partenaire_local_new": {
+    "angularproject": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -57,10 +57,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "espace_partenaire_local_new:build:production"
+              "buildTarget": "angularproject:build:production"
             },
             "development": {
-              "buildTarget": "espace_partenaire_local_new:build:development"
+              "buildTarget": "angularproject:build:development"
             }
           },
           "defaultConfiguration": "development"
