@@ -1,0 +1,40 @@
+:host {
+  display: block;
+  height: 100vh;       /* was min-height: 0vh */
+  background: #f8fafc;
+  color: #111827;
+  overflow: hidden;    /* prevent the whole page from scrolling */
+}
+
+.app-shell {
+  display: flex;
+  height: 100vh;        /* was min-height */
+  width: 100%;
+  align-items: stretch;
+}
+
+app-side-bare {
+  flex-shrink: 0;       /* sidebar keeps its own width, never shrinks */
+  height: 100vh;
+  overflow-y: auto;      /* in case sidebar content is long */
+}
+
+.main-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;      /* only content-area scrolls, not this panel */
+}
+
+app-header {
+  flex-shrink: 0;        /* header keeps its height, stays put */
+}
+
+.content-area {
+  flex: 1;
+  min-height: 0;          /* critical: lets flex child scroll instead of growing */
+  overflow-y: auto;       /* THIS is what scrolls */
+  background: #f4f6f8;
+  padding: 24px 28px 28px;
+}

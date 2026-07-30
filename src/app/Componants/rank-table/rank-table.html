@@ -1,0 +1,32 @@
+<div class="rank-table-card">
+  <div class="rank-table-header">
+    <div>
+      <p class="eyebrow">Performance</p>
+      <h3>Classement des annonces</h3>
+    </div>
+    <span class="pill">{{ sortedRows.length }} annonces</span>
+  </div>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Annonce</th>
+          <th>Vues</th>
+          <th>Leads</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of sortedRows; track row.name; let i = $index) {
+          <tr class="table-row" [style.animation-delay.ms]="i * 70">
+            <td class="rank">{{ i + 1 }}</td>
+            <td class="name-cell">{{ row.name }}</td>
+            <td class="table-number">{{ animatedViews()[i] | number }}</td>
+            <td class="table-number">{{ animatedLeads()[i] | number }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

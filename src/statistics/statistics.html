@@ -1,0 +1,35 @@
+<div class="statistics-grid" *ngIf="statistics">
+
+  <div class="stats-column stats-column-left">
+
+    <div class="stats-top">
+      <app-kpi-stats
+        [statistics]="statistics">
+      </app-kpi-stats>
+    </div>
+
+    <div class="stats-main">
+      <app-hitogram
+        [dailyViews]="statistics.dailyViews">
+      </app-hitogram>
+    </div>
+
+  </div>
+
+  <div class="stats-column stats-column-right">
+
+    <div class="stats-right-top">
+      <app-donut-plot
+        [statistics]="statistics">
+      </app-donut-plot>
+    </div>
+
+    <div class="stats-right-bottom">
+      <app-rank-table
+        [rankings]="statistics.rankings">
+      </app-rank-table>
+    </div>
+
+  </div>
+
+</div>

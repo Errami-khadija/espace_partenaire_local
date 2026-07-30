@@ -1,0 +1,19 @@
+
+<div class="stat-card" [style.border-left-color]="color()">
+
+  <div class="stat-info">
+    <span class="stat-title">{{ title() }}</span>
+    <h2>{{ value() }}</h2>
+  </div>
+
+  <div
+    class="icon-container"
+    [style.background-color]="color() + '1A'" 
+    [style.color]="color()"
+  >
+    <span class="material-icons">
+      {{ icon() }}
+    </span>
+  </div>
+
+</div>

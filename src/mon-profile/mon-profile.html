@@ -1,0 +1,152 @@
+<div class="modal-card">
+  <form [formGroup]="profileForm" class="profile-form">
+
+    <!-- Row 1: Logo Upload & Company Name -->
+    <div class="form-group full-width logo-upload">
+      <label>Logo de l'entreprise</label>
+
+       @if (logoPreview) {
+        <div class="preview-box">
+          <img [src]="logoPreview" alt="Logo" class="logo-preview">
+        </div>
+      }
+      <div class="file-input-wrapper">
+  <input
+    type="file"
+    accept="image/*"
+    (change)="onLogoSelected($event)"
+    id="logoInput"
+    class="hidden-file-input"
+  >
+  <label for="logoInput" class="custom-file-upload">
+    <span class="upload-btn">Sélect. fichiers</span>
+    <span class="file-name" id="fileNameText">
+      {{ selectedFileName || 'Aucun fichier choisi' }}
+    </span>
+  </label>
+</div>
+
+     
+    </div>
+
+    <!-- Column 1 & 2 Layout -->
+    <div class="form-group">
+      <label>Nom de l'entreprise</label>
+      <input
+        type="text"
+        formControlName="companyName"
+        [class.is-invalid]="profileForm.get('companyName')?.invalid && profileForm.get('companyName')?.touched"
+      >
+      @if (profileForm.get('companyName')?.invalid && profileForm.get('companyName')?.touched) {
+        @if (profileForm.get('companyName')?.errors?.['required']) {
+          <small class="error-msg">Le nom de l'entreprise est obligatoire.</small>
+        }
+        @if (profileForm.get('companyName')?.errors?.['minlength']) {
+          <small class="error-msg">Minimum 3 caractères.</small>
+        }
+      }
+    </div>
+
+    <div class="form-group">
+      <label>Secteur</label>
+      <input
+        type="text"
+        formControlName="sector"
+        [class.is-invalid]="profileForm.get('sector')?.invalid && profileForm.get('sector')?.touched"
+      >
+      @if (profileForm.get('sector')?.invalid && profileForm.get('sector')?.touched) {
+        <small class="error-msg">Le secteur est obligatoire.</small>
+      }
+    </div>
+
+    <div class="form-group">
+      <label>Région</label>
+      <input
+        type="text"
+        formControlName="region"
+        [class.is-invalid]="profileForm.get('region')?.invalid && profileForm.get('region')?.touched"
+      >
+      @if (profileForm.get('region')?.invalid && profileForm.get('region')?.touched) {
+        <small class="error-msg">La région est obligatoire.</small>
+      }
+    </div>
+
+    <div class="form-group">
+      <label>Site Web</label>
+      <input
+        type="url"
+        formControlName="website"
+        [class.is-invalid]="profileForm.get('website')?.invalid && profileForm.get('website')?.touched"
+      >
+      @if (profileForm.get('website')?.invalid && profileForm.get('website')?.touched) {
+        <small class="error-msg">Veuillez saisir une URL valide.</small>
+      }
+    </div>
+
+    <div class="form-group">
+      <label>Email</label>
+      <input
+        type="email"
+        formControlName="email"
+        [class.is-invalid]="profileForm.get('email')?.invalid && profileForm.get('email')?.touched"
+      >
+      @if (profileForm.get('email')?.invalid && profileForm.get('email')?.touched) {
+        @if (profileForm.get('email')?.errors?.['required']) {
+          <small class="error-msg">L'email est obligatoire.</small>
+        }
+        @if (profileForm.get('email')?.errors?.['email']) {
+          <small class="error-msg">Adresse email invalide.</small>
+        }
+      }
+    </div>
+
+    <div class="form-group">
+      <label>Téléphone</label>
+      <input
+        type="tel"
+        formControlName="phone"
+        [class.is-invalid]="profileForm.get('phone')?.invalid && profileForm.get('phone')?.touched"
+      >
+      @if (profileForm.get('phone')?.invalid && profileForm.get('phone')?.touched) {
+        @if (profileForm.get('phone')?.errors?.['required']) {
+          <small class="error-msg">Le téléphone est obligatoire.</small>
+        }
+        @if (profileForm.get('phone')?.errors?.['pattern']) {
+          <small class="error-msg">Numéro de téléphone invalide.</small>
+        }
+      }
+    </div>
+
+    <div class="form-group full-width">
+      <label>Adresse</label>
+      <input type="text" formControlName="address">
+    </div>
+
+    <div class="form-group full-width">
+      <label>Description</label>
+      <textarea
+        rows="4"
+        formControlName="description"
+        [class.is-invalid]="profileForm.get('description')?.invalid && profileForm.get('description')?.touched"
+      ></textarea>
+      @if (profileForm.get('description')?.invalid && profileForm.get('description')?.touched) {
+        @if (profileForm.get('description')?.errors?.['required']) {
+          <small class="error-msg">La description est obligatoire.</small>
+        }
+        @if (profileForm.get('description')?.errors?.['minlength']) {
+          <small class="error-msg">Minimum 20 caractères.</small>
+        }
+      }
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="form-actions">
+  <button
+    type="button"
+    class="save-btn"
+    (click)="saveProfile()">
+    Enregistrer
+  </button>
+</div>
+  </form>
+</div>

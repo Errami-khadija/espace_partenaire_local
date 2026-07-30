@@ -1,0 +1,204 @@
+<div class="page-header">
+
+    <h2>Mes annonces</h2>
+
+    <button class="add-announcement-btn" (click)="openForm()">
+    <span class="icon">+</span>
+        Ajouter une annonce
+    </button>
+   
+
+</div>
+<app-announcement-table
+    #table
+    (edit)="onEditAnnouncement($event)"
+    (viewDetails)="openDetails($event)"
+    (refresh)="table.loadAnnouncements()">
+</app-announcement-table>
+
+@if(showForm){
+
+<div class="modal-backdrop">
+
+    <div class="announcement-modal">
+
+        <button
+            class="close-btn"
+            (click)="closeForm()">
+
+            ✕
+
+        </button>
+
+        <app-announcement-form
+  [announcement]="selectedAnnouncement"
+  (close)="closeForm()"
+  (saved)="table.loadAnnouncements()">
+</app-announcement-form>
+
+    </div>
+
+</div>
+
+}
+
+@if (showDetails && selectedAnnouncement) {
+
+<div class="modal-backdrop">
+
+  <div class="modal-content details-modal">
+
+    <div class="modal-header">
+      <h2>Détails de l'annonce</h2>
+      <button class="close-btn" (click)="closeDetails()">✕</button>
+    </div>
+
+    <!-- ✅ WRAPPER UNIQUE POUR LE SCROLL -->
+    <div class="modal-body-wrapper">
+
+      <div class="details-grid">
+        <div class="detail-item">
+          <label>Titre</label>
+          <span>{{ selectedAnnouncement.title }}</span>
+        </div>
+
+        <div class="detail-item">
+          <label>Type</label>
+          <span>
+            @switch (selectedAnnouncement.type) {
+              @case ('investment') { Investissement }
+              @case ('collaboration') { Collaboration }
+              @case ('tourism') { Tourisme }
+            }
+          </span>
+        </div>
+
+        <div class="detail-item full-width">
+          <label>Description</label>
+          <span>{{ selectedAnnouncement.description }}</span>
+        </div>
+
+        <div class="detail-item">
+          <label>Secteur</label>
+          <span>{{ selectedAnnouncement.sector }}</span>
+        </div>
+
+        <div class="detail-item">
+          <label>Région</label>
+          <span>{{ selectedAnnouncement.region }}</span>
+        </div>
+
+        <div class="detail-item">
+          <label>Contact</label>
+          <span>{{ selectedAnnouncement.contact }}</span>
+        </div>
+
+        <div class="detail-item">
+          <label>Statut</label>
+          <span class="status-badge" [ngClass]="selectedAnnouncement.status">
+            @switch (selectedAnnouncement.status) {
+              @case ('draft') { Brouillon }
+              @case ('pending') { En attente }
+              @case ('published') { Publiée }
+              @case ('rejected') { Rejetée }
+              @case ('archived') { Archivée }
+            }
+          </span>
+        </div>
+
+        <div class="detail-item">
+          <label>Vues</label>
+          <span>{{ selectedAnnouncement.views }}</span>
+        </div>
+
+        <div class="detail-item">
+          <label>Date</label>
+          <span>{{ selectedAnnouncement.createdAt}}</span>
+        </div>
+      </div>
+
+      <!-- Investissement -->
+      @if (selectedAnnouncement.type === 'investment') {
+        <hr>
+        <h3>Informations d'investissement</h3>
+        <div class="details-grid">
+          <div class="detail-item">
+            <label>Montant recherché</label>
+            <span>{{ selectedAnnouncement.amountSought }} DT</span>
+          </div>
+          <div class="detail-item">
+            <label>ROI estimé</label>
+            <span>{{ selectedAnnouncement.estimatedROI }} %</span>
+          </div>
+          <div class="detail-item">
+            <label>Durée du projet</label>
+            <span>{{ selectedAnnouncement.projectDuration }}</span>
+          </div>
+        </div>
+      }
+
+      <!-- Collaboration -->
+      @if (selectedAnnouncement.type === 'collaboration') {
+        <hr>
+        <h3>Informations de collaboration</h3>
+        <div class="details-grid">
+          <div class="detail-item">
+            <label>Type de collaboration</label>
+            <span>{{ selectedAnnouncement.collaborationType }}</span>
+          </div>
+          <div class="detail-item">
+            <label>Profil recherché</label>
+            <span>{{ selectedAnnouncement.requiredProfile }}</span>
+          </div>
+        </div>
+      }
+
+      <!-- Tourisme -->
+      @if (selectedAnnouncement.type === 'tourism') {
+        <hr>
+        <h3>Informations touristiques</h3>
+        <div class="details-grid">
+          <div class="detail-item">
+            <label>Type de projet</label>
+            <span>{{ selectedAnnouncement.tourismProjectType }}</span>
+          </div>
+          <div class="detail-item">
+            <label>Capacité</label>
+            <span>{{ selectedAnnouncement.capacity }} personnes</span>
+          </div>
+        </div>
+      }
+
+      <!-- Motif du rejet -->
+      @if (selectedAnnouncement.status === 'rejected') {
+        <hr>
+        <div class="reject-box">
+          <h3>Motif du rejet</h3>
+          <p>{{ selectedAnnouncement.rejectionReason }}</p>
+        </div>
+      }
+
+    </div>
+    <!-- ✅ FIN DU WRAPPER SCROLLABLE -->
+
+  <div class="modal-footer">
+
+  <button
+    class="delete-btn"
+    (click)="deleteAnnouncement()">
+    Supprimer
+  </button>
+
+  <button
+    class="close-modal-btn"
+    (click)="closeDetails()">
+    Fermer
+  </button>
+
+</div>
+
+  </div>
+
+</div>
+
+}

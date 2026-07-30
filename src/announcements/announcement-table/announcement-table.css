@@ -1,0 +1,455 @@
+/* ========================================
+   1. ANIMATION KEYFRAMES
+   ======================================== */
+@keyframes tableEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes rowFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes badgePulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+/* ========================================
+   2. TABLE WRAPPER & CONTAINER
+   ======================================== */
+.table-wrapper {
+  width: 100%;
+  overflow: hidden; 
+  border-radius: 16px;
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.05),
+    0 10px 40px rgba(0, 0, 0, 0.03);
+  border: 1px solid #e2e8f0;
+
+  /* ✅ Added Entrance Animation */
+  animation: tableEntrance 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.announcement-table {
+  width: 100%;
+  background: #ffffff;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Header */
+.announcement-table thead {
+  background: linear-gradient(135deg, #2c79eb 0%, #159699 100%);
+  position: relative;
+}
+
+.announcement-table thead::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at top right,
+    rgba(255, 255, 255, 0.1) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.announcement-table thead tr {
+  position: relative;
+  z-index: 1;
+}
+
+.announcement-table th {
+  padding: 20px 24px;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+
+.announcement-table th:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.announcement-table th:active {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.announcement-table th::after {
+  content: '⇅';
+  margin-left: 8px;
+  opacity: 0.5;
+  font-size: 12px;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  display: inline-block;
+}
+
+.announcement-table th:hover::after {
+  opacity: 1;
+  transform: translateY(-1px);
+}
+
+/* ========================================
+   3. TABLE BODY & STAGGERED ROW ANIMATIONS
+   ======================================== */
+.announcement-table tbody {
+  position: relative;
+}
+
+.announcement-table tbody tr {
+  border-bottom: 1px solid #e2e8f0;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+
+  /* ✅ Added Staggered Row Animation Base */
+  animation: rowFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Cascading Delays for Table Rows */
+.announcement-table tbody tr:nth-child(1) { animation-delay: 0.05s; }
+.announcement-table tbody tr:nth-child(2) { animation-delay: 0.10s; }
+.announcement-table tbody tr:nth-child(3) { animation-delay: 0.15s; }
+.announcement-table tbody tr:nth-child(4) { animation-delay: 0.20s; }
+.announcement-table tbody tr:nth-child(5) { animation-delay: 0.25s; }
+.announcement-table tbody tr:nth-child(6) { animation-delay: 0.30s; }
+.announcement-table tbody tr:nth-child(7) { animation-delay: 0.35s; }
+.announcement-table tbody tr:nth-child(8) { animation-delay: 0.40s; }
+
+/* ✅ Elevated Row Hover Effect */
+.announcement-table tbody tr:hover {
+  background: #f8fafc;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  z-index: 10;
+}
+
+.announcement-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.announcement-table td {
+  padding: 18px 24px;
+  font-size: 15px;
+  color: #475569;
+  vertical-align: middle;
+  transition: color 0.2s ease;
+}
+
+.announcement-table td:first-child {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+/* ========================================
+   4. STATUS BADGES
+   ======================================== */
+.status-badge {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: capitalize;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  transition: all 0.25s ease;
+}
+
+.status-badge:hover {
+  transform: translateY(-1px);
+}
+
+.status-badge.draft {
+  background: #f1f5f9;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+}
+
+.status-badge.pending {
+  background: #fff7ed;
+  color: #ea580c;
+  border: 1px solid #fed7aa;
+}
+
+.status-badge.published {
+  background: #f0fdf4;
+  color: #16a34a;
+  border: 1px solid #bbf7d0;
+}
+
+.status-badge.rejected {
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+
+.status-badge.archived {
+  background: #faf5ff;
+  color: #9333ea;
+  border: 1px solid #e9d5ff;
+}
+
+/* ========================================
+   5. ACTIONS & ICON BUTTONS
+   ======================================== */
+.actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  position: relative;
+}
+
+.icon-btn {
+  font-family: 'Inter', sans-serif;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: visible;
+}
+
+.icon-btn svg {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.icon-btn:hover svg {
+  transform: scale(1.15);
+}
+
+.icon-btn:active {
+  transform: scale(0.92);
+}
+
+/* Tooltip Styling */
+.icon-btn::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px) scale(0.9);
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: #1e293b;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
+/* Tooltip Arrow */
+.icon-btn::after {
+  content: '';
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px) scale(0.9);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid #1e293b;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1000;
+}
+
+.icon-btn:hover::before,
+.icon-btn:hover::after {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0) scale(1);
+}
+
+/* Edit Button */
+.edit-btn {
+  background: #eff6ff;
+  color: #2563eb;
+  border: 1px solid #dbeafe;
+}
+
+.edit-btn:hover {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+}
+
+/* Archive Button */
+.archive-btn {
+  background: #faf5ff;
+  color: #9333ea;
+  border: 1px solid #e9d5ff;
+}
+
+.archive-btn:hover {
+  background: #9333ea;
+  color: #ffffff;
+  border-color: #9333ea;
+  box-shadow: 0 4px 12px rgba(147, 51, 234, 0.25);
+}
+
+/* Details Button */
+.details-btn {
+  background: linear-gradient(100deg, #2c79eb, #159699);
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 4px 12px rgba(11, 44, 80, 0.2);
+}
+
+.details-btn:hover {
+  background: linear-gradient(100deg, #2673e5, #13a89d);
+  box-shadow: 0 6px 16px rgba(11, 44, 80, 0.3);
+}
+
+/* Reject Reason Button */
+.reject-btn {
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+
+.reject-btn:hover {
+  background: #dc2626;
+  color: #ffffff;
+  border-color: #dc2626;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+}
+
+/* ========================================
+   6. RESPONSIVE BREAKPOINTS
+   ======================================== */
+@media (max-width: 1200px) {
+  .announcement-table th,
+  .announcement-table td {
+    padding: 16px 20px;
+    font-size: 14px;
+  }
+
+  .icon-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .icon-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .actions {
+    gap: 6px;
+  }
+}
+
+@media (max-width: 992px) {
+  .announcement-table {
+    border-radius: 12px;
+  }
+
+  .announcement-table th,
+  .announcement-table td {
+    padding: 14px 16px;
+    font-size: 13px;
+  }
+
+  .status-badge {
+    font-size: 12px;
+    padding: 5px 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .announcement-table {
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .announcement-table thead {
+    display: none;
+  }
+
+  .announcement-table tbody {
+    display: block;
+  }
+
+  .announcement-table tbody tr {
+    display: block;
+    margin-bottom: 16px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  }
+
+  .announcement-table tbody tr:hover {
+    transform: none;
+  }
+
+  .announcement-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  .announcement-table td:last-child {
+    border-bottom: none;
+  }
+
+  .announcement-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #1e293b;
+    margin-right: 12px;
+  }
+
+  .actions {
+    flex-direction: row;
+    width: 100%;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+
+  .icon-btn::before,
+  .icon-btn::after {
+    display: none;
+  }
+}

@@ -1,0 +1,134 @@
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+/* Banner Container */
+.welcome-banner {
+  position: relative;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  border-radius: 20px;
+  padding: 32px;
+  color: #ffffff;
+  margin-bottom: 28px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.15);
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Arrière-plan abstrait et créatif */
+.banner-shape {
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, rgba(43, 181, 164, 0.25) 0%, rgba(29, 136, 175, 0) 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* Disposisiton interne */
+.banner-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+}
+
+/* Textes */
+.banner-text {
+  max-width: 520px;
+}
+
+.badge-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(43, 181, 164, 0.15);
+  border: 1px solid rgba(43, 181, 164, 0.3);
+  color: #2bb5a4;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  background-color: #2bb5a4;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #2bb5a4;
+}
+
+.banner-text h1 {
+  margin: 0 0 8px 0;
+  font-size: 26px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.5px;
+}
+
+.banner-text p {
+  margin: 0;
+  font-size: 14px;
+  color: #94a3b8;
+  line-height: 1.5;
+}
+
+/* Section Droite (Widgets) */
+.banner-widgets {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 16px;
+  min-width: 220px;
+}
+
+
+
+/* Bouton d'action rapide */
+.quick-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #2bb5a4, #1d88af);
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 14px rgba(43, 181, 164, 0.3);
+}
+
+.quick-action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(43, 181, 164, 0.4);
+}
+
+.quick-action-btn .material-icons {
+  font-size: 18px;
+}
+
+/* Responsive pour Mobile/Tablette */
+@media (max-width: 768px) {
+  .banner-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .banner-widgets {
+    width: 100%;
+    align-items: stretch;
+  }
+}

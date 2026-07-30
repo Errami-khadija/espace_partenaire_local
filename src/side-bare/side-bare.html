@@ -1,0 +1,52 @@
+<aside class="sidebar" [class.collapsed]="collapsed">
+  <div class="sidebar-top">
+    <div class="brand-card">
+      <div class="brand-mark" role="button" tabindex="0" (click)="toggleCollapsed()" aria-label="Toggle sidebar">
+        <span class="brand-initial">EP</span>
+        <span class="brand-hover-icon">
+          <svg class="icon-collapse" lucideChevronsLeft [size]="18" [strokeWidth]="2" aria-hidden="true"></svg>
+          <svg class="icon-expand" lucideChevronsRight [size]="18" [strokeWidth]="2" aria-hidden="true"></svg>
+        </span>
+      </div>
+      <div class="brand-copy">
+        <span class="brand-title">Espace Partenaire</span>
+        <span class="brand-subtitle">Partner dashboard</span>
+      </div>
+    </div>
+
+
+  </div>
+
+  <nav class="main-nav">
+    <ul>
+      <li *ngFor="let item of items">
+        <a class="nav-link" [routerLink]="item.path" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+          <span class="nav-icon" aria-hidden="true">
+            <ng-container [ngSwitch]="item.icon">
+              <svg *ngSwitchCase="'home'" lucideHouse [size]="18" [strokeWidth]="1.8"></svg>
+              <svg *ngSwitchCase="'bell'" lucideBell [size]="18" [strokeWidth]="1.8"></svg>
+              <svg *ngSwitchCase="'building'" lucideBuilding2 [size]="18" [strokeWidth]="1.8"></svg>
+              <svg *ngSwitchCase="'chart'" lucideChartColumn [size]="18" [strokeWidth]="1.8"></svg>
+              <svg *ngSwitchCase="'monitor'" lucideMonitor [size]="18" [strokeWidth]="1.8"></svg>
+              <svg *ngSwitchCase="'user'" lucideUserRound [size]="18" [strokeWidth]="1.8"></svg>
+              <svg *ngSwitchCase="'logout'" lucideLogOut [size]="18" [strokeWidth]="1.8"></svg>
+            </ng-container>
+          </span>
+          <span class="nav-label" *ngIf="!collapsed">{{ item.label }}</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="support-card">
+      <span class="support-icon" aria-hidden="true">
+        <svg lucideHeadphones [size]="18" [strokeWidth]="1.8"></svg>
+      </span>
+      <div class="support-copy" *ngIf="!collapsed">
+        <p class="support-title">Besoin d'aide ?</p>
+        <p class="support-subtitle">Support disponible</p>
+      </div>
+    </div>
+  </div>
+</aside>

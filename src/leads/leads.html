@@ -1,0 +1,86 @@
+<div class="leads-container">
+  <div class="header-section">
+    <div>
+      <h1 class="page-title">Gestion des Leads</h1>
+      <p class="page-subtitle">Gérez et contactez vos investisseurs potentiels.</p>
+    </div>
+    <div class="actions-group">
+      <div class="search-bar">
+        <svg lucideSearch class="search-icon"></svg>
+        <input type="text" placeholder="Rechercher un lead..." class="search-input">
+      </div>
+      <button class="btn-filter">
+        <svg lucideFilter class="icon"></svg>
+        Filtrer
+      </button>
+    </div>
+  </div>
+
+  <div class="content-grid">
+    <div class="stats-card">
+      <h2 class="card-title">Statistiques des Leads par Annonce</h2>
+      <div class="stats-list">
+        <div class="stat-item" *ngFor="let stat of stats">
+          <div class="stat-info">
+            <span class="stat-name">{{ stat.annonce }}</span>
+            <span class="stat-value">{{ stat.count }} leads</span>
+          </div>
+          <div class="progress-bar-container">
+            <div class="progress-bar" [style.width.%]="stat.percentage"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="card-header">
+        <h2 class="card-title">Leads Récents</h2>
+      </div>
+      <div class="table-responsive">
+        <table class="leads-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Annonce Concernée</th>
+              <th>Pays Investisseur</th>
+              <th>Date</th>
+              <th>Statut</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let lead of leads">
+              <td class="col-id">{{ lead.id }}</td>
+              <td class="col-annonce">{{ lead.annonce }}</td>
+              <td>
+                <div class="pays-cell">
+                  <span>{{ lead.pays }}</span>
+                </div>
+              </td>
+              <td class="col-date">{{ lead.date | date:'dd MMM yyyy' }}</td>
+              <td>
+                <span class="badge" [ngClass]="getStatutClass(lead.statut)">
+                  {{ getStatutLabel(lead.statut) }}
+                </span>
+              </td>
+              <td>
+                <div class="actions-cell">
+                  <button class="btn-contacter" (click)="contacter(lead)">
+                    <svg lucideMessageCircle class="icon-small"></svg>
+                    Contacter
+                  </button>
+                  <button class="btn-icon">
+                    <svg lucideMoreVertical class="icon-small"></svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+   
+
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,379 @@
+<div class="visibility-container">
+  
+  <!-- KPI cards section -->
+  <section class="kpis-section">
+    <div class="kpi-card-glow">
+      <div class="kpi-icon-wrapper blue">
+        <svg lucideSlidersHorizontal [size]="20" class="kpi-icon"></svg>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-label">Annonces configurées</span>
+        <h3 class="kpi-value">{{ totalServicesCount() }}</h3>
+        <span class="kpi-subtext">Total dans votre catalogue</span>
+      </div>
+    </div>
+
+    <div class="kpi-card-glow">
+      <div class="kpi-icon-wrapper green">
+        <svg lucideCheck [size]="20" class="kpi-icon"></svg>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-label">Annonces Actives</span>
+        <h3 class="kpi-value">{{ activeServicesCount() }}</h3>
+        <span class="kpi-subtext">Visibles en ligne</span>
+      </div>
+    </div>
+
+    <div class="kpi-card-glow">
+      <div class="kpi-icon-wrapper purple">
+        <svg lucideTrendingUp [size]="20" class="kpi-icon"></svg>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-label">Impression Totales</span>
+        <h3 class="kpi-value">{{ totalImpressionsCount() | number }}</h3>
+        <span class="kpi-subtext">Vues ce mois-ci</span>
+      </div>
+    </div>
+
+    <div class="kpi-card-glow">
+      <div class="kpi-icon-wrapper gold">
+        <svg lucideSparkles [size]="20" class="kpi-icon"></svg>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-label">Score de Visibilité moyen</span>
+        <h3 class="kpi-value">{{ averageVisibilityScore() }}%</h3>
+        <div class="score-mini-progress">
+          <div class="score-mini-bar" [style.width.%]="averageVisibilityScore()"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Filter & Control Bar -->
+  <section class="controls-card">
+    <div class="search-box">
+      <svg lucideSearch [size]="18" class="search-icon"></svg>
+      <input 
+        type="text" 
+        placeholder="Rechercher une annonce, mot-clé..." 
+        [ngModel]="searchQuery()" 
+        (ngModelChange)="searchQuery.set($event)"
+        class="search-input"
+      />
+      <button *ngIf="searchQuery()" (click)="searchQuery.set('')" class="clear-search-btn">
+        <svg lucideX [size]="14"></svg>
+      </button>
+    </div>
+
+    <div class="filters-group">
+      <div class="select-wrapper">
+        <select 
+          [ngModel]="selectedCategory()" 
+          (ngModelChange)="selectedCategory.set($event)"
+          class="filter-select"
+        >
+          <option value="all">Toutes catégories</option>
+          <option *ngFor="let cat of categories().slice(1)" [value]="cat">{{ cat }}</option>
+        </select>
+      </div>
+
+      <div class="status-tabs">
+        <button 
+          [class.active]="selectedStatus() === 'all'" 
+          (click)="selectedStatus.set('all')"
+          class="tab-btn"
+        >
+          Tous
+        </button>
+        <button 
+          [class.active]="selectedStatus() === 'active'" 
+          (click)="selectedStatus.set('active')"
+          class="tab-btn"
+        >
+          Actifs
+        </button>
+        <button 
+          [class.active]="selectedStatus() === 'inactive'" 
+          (click)="selectedStatus.set('inactive')"
+          class="tab-btn"
+        >
+          Inactifs
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Services Table Card -->
+  <section class="table-card">
+    <div class="card-header">
+      <div>
+        <h2 class="card-title">Performance et Visibilité</h2>
+        <p class="card-subtitle">Pilotez la présence en ligne de vos prestations</p>
+      </div>
+      <div class="premium-badge-info">
+        <svg lucideInfo [size]="14"></svg>
+        <span>Le boost augmente votre visibilité locale de 50%</span>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <table *ngIf="filteredServices().length > 0; else noData">
+        <thead>
+          <tr>
+            <th>Annonce</th>
+            <th class="text-center">Statut</th>
+            <th>Score de visibilité</th>
+            <th class="text-right">Impressions</th>
+            <th class="text-right">Clics</th>
+            <th class="text-right">CTR</th>
+            <th class="text-center">Boost Premium</th>
+            <th class="text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let s of filteredServices()" class="table-row" [class.row-inactive]="!s.isActive">
+            <td>
+              <div class="service-name-cell">
+                <span class="service-name">{{ s.name }}</span>
+                <span class="service-cat">{{ s.category }}</span>
+              </div>
+            </td>
+            
+            <td class="text-center">
+              <button 
+                class="status-toggle-pill" 
+                [class.active]="s.isActive"
+                (click)="toggleServiceStatus(s.id, $event)"
+                [title]="s.isActive ? 'Désactiver' : 'Activer'"
+              >
+                <span class="indicator"></span>
+                <span class="status-text">{{ s.isActive ? 'En ligne' : 'Masquée' }}</span>
+              </button>
+            </td>
+
+            <td>
+              <div class="visibility-score-cell">
+                <div class="score-badge" [class.high]="s.visibilityScore >= 80" [class.medium]="s.visibilityScore >= 50 && s.visibilityScore < 80" [class.low]="s.visibilityScore < 50">
+                  {{ s.visibilityScore }}%
+                </div>
+                <div class="score-track">
+                  <div 
+                    class="score-bar" 
+                    [style.width.%]="s.visibilityScore"
+                    [class.high]="s.visibilityScore >= 80" 
+                    [class.medium]="s.visibilityScore >= 50 && s.visibilityScore < 80" 
+                    [class.low]="s.visibilityScore < 50"
+                  ></div>
+                </div>
+              </div>
+            </td>
+
+            <td class="text-right table-number">{{ s.impressions | number }}</td>
+            <td class="text-right table-number">{{ s.clicks | number }}</td>
+            <td class="text-right table-number text-indigo font-bold">{{ s.ctr }}%</td>
+
+            <td class="text-center">
+              <button 
+                class="boost-badge-btn" 
+                [class.boosted]="s.isBoosted"
+                (click)="toggleBooster(s.id, $event)"
+                [disabled]="!s.isActive"
+                [title]="!s.isActive ? 'Activez d\'abord l\'annonce' : (s.isBoosted ? 'Désactiver le boost' : 'Activer le boost')"
+              >
+                <svg lucideSparkles [size]="14" class="spark-icon"></svg>
+                <span>{{ s.isBoosted ? 'Boosté' : 'Booster' }}</span>
+              </button>
+            </td>
+
+            <td class="text-center">
+              <button class="action-btn-settings" (click)="openSettings(s)" title="Configurer">
+                <svg lucideSettings [size]="16"></svg>
+                <span>Gérer</span>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Empty state template -->
+      <ng-template #noData>
+        <div class="empty-state">
+          <svg lucideSearch [size]="48" class="empty-icon"></svg>
+          <h3>Aucune annonce trouvée</h3>
+          <p>Essayez de modifier vos filtres ou votre terme de recherche.</p>
+          <button (click)="searchQuery.set(''); selectedCategory.set('all'); selectedStatus.set('all');" class="reset-filters-btn">
+            Réinitialiser les filtres
+          </button>
+        </div>
+      </ng-template>
+    </div>
+  </section>
+
+  <!-- Edit Settings Modal Overlay -->
+  <div class="modal-backdrop" *ngIf="activeEditingService() as service">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <span class="modal-tag">{{ service.category }}</span>
+          <h2 class="modal-title">Paramètres de Visibilité</h2>
+          <p class="modal-subtitle">{{ service.name }}</p>
+        </div>
+        <button class="close-btn" (click)="closeSettings()">
+          <svg lucideX [size]="20"></svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        
+        <!-- Status & Booster Settings -->
+        <div class="modal-section-grid">
+          <div class="config-panel">
+            <label class="config-label">Statut de l'annonce</label>
+            <div class="toggle-control-box">
+              <div class="toggle-info-copy">
+                <span class="toggle-title">{{ service.isActive ? 'En ligne et visible' : 'Masquée pour les clients' }}</span>
+                <span class="toggle-desc">Détermine si les clients peuvent réserver ou voir cette annonce</span>
+              </div>
+              <button 
+                class="status-toggle-pill big" 
+                [class.active]="service.isActive"
+                (click)="service.isActive = !service.isActive"
+              >
+                <span class="indicator"></span>
+              </button>
+            </div>
+          </div>
+
+          <div class="config-panel" [class.disabled-opacity]="!service.isActive">
+            <label class="config-label">Boost Premium</label>
+            <div class="toggle-control-box">
+              <div class="toggle-info-copy">
+                <span class="toggle-title">Visibilité Prioritaire</span>
+                <span class="toggle-desc">Place cette annonce en tête des résultats locaux</span>
+              </div>
+              <button 
+                class="boost-toggle-btn"
+                [class.active]="service.isBoosted && service.isActive"
+                (click)="service.isActive && (service.isBoosted = !service.isBoosted)"
+                [disabled]="!service.isActive"
+              >
+                <svg lucideSparkles [size]="16" class="spark-icon"></svg>
+                <span>{{ service.isBoosted && service.isActive ? 'Boost Activé' : 'Activer le Boost' }}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Radius Slider -->
+        <div class="modal-section" [class.disabled-opacity]="!service.isActive">
+          <div class="section-header-flex">
+            <label class="config-label">Rayon d'action local</label>
+            <span class="radius-value-badge">
+              <svg lucideMapPin [size]="14"></svg>
+              <span>{{ service.radius }} km</span>
+            </span>
+          </div>
+          <div class="slider-container">
+            <input 
+              type="range" 
+              min="5" 
+              max="100" 
+              step="5" 
+              [(ngModel)]="service.radius"
+              [disabled]="!service.isActive"
+              class="range-slider"
+            />
+            <div class="slider-labels">
+              <span>5 km</span>
+              <span>25 km</span>
+              <span>50 km</span>
+              <span>75 km</span>
+              <span>100 km (Max)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Target Type -->
+        <div class="modal-section" [class.disabled-opacity]="!service.isActive">
+          <label class="config-label">Cible Clientèle</label>
+          <div class="target-type-selector">
+            <button 
+              type="button" 
+              class="target-btn" 
+              [class.active]="service.targetType === 'B2C'"
+              (click)="service.isActive && (service.targetType = 'B2C')"
+              [disabled]="!service.isActive"
+            >
+              Particuliers (B2C)
+            </button>
+            <button 
+              type="button" 
+              class="target-btn" 
+              [class.active]="service.targetType === 'B2B'"
+              (click)="service.isActive && (service.targetType = 'B2B')"
+              [disabled]="!service.isActive"
+            >
+              Professionnels (B2B)
+            </button>
+            <button 
+              type="button" 
+              class="target-btn" 
+              [class.active]="service.targetType === 'Tous'"
+              (click)="service.isActive && (service.targetType = 'Tous')"
+              [disabled]="!service.isActive"
+            >
+              Tous
+            </button>
+          </div>
+        </div>
+
+        <!-- Keywords/Tags Chips -->
+        <div class="modal-section" [class.disabled-opacity]="!service.isActive">
+          <label class="config-label">Mots-clés de recherche associés</label>
+          <p class="section-helptext">Mots-clés saisis par les clients pour faire apparaître vos annonces</p>
+          
+          <div class="keywords-wrap">
+            <span *ngFor="let kw of service.keywords" class="keyword-chip">
+              <span>#{{ kw }}</span>
+              <button 
+                class="remove-kw-btn" 
+                (click)="service.isActive && removeKeyword(kw)"
+                [disabled]="!service.isActive"
+              >
+                <svg lucideX [size]="12"></svg>
+              </button>
+            </span>
+          </div>
+
+          <div class="add-keyword-bar">
+            <svg lucideTags [size]="16" class="tag-input-icon"></svg>
+            <input 
+              type="text" 
+              placeholder="Ajouter un mot-clé (ex: dépannage)..." 
+              [(ngModel)]="newKeywordInput"
+              (keyup.enter)="service.isActive && addKeyword()"
+              [disabled]="!service.isActive"
+              class="tag-input"
+            />
+            <button 
+              type="button" 
+              class="add-tag-btn" 
+              (click)="addKeyword()"
+              [disabled]="!service.isActive"
+            >
+              <svg lucidePlus [size]="16"></svg>
+              <span>Ajouter</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-cancel" (click)="closeSettings()">Annuler</button>
+        <button class="btn-save" (click)="saveSettings()">Enregistrer les modifications</button>
+      </div>
+    </div>
+  </div>
+
+</div>

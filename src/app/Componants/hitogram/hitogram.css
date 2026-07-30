@@ -1,0 +1,38 @@
+.histogram-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 1.2rem;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+
+  /* NEW: fill parent + let children stack in a column that can grow */
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.histogram-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  flex-shrink: 0; /* NEW: header keeps its natural height, never shrinks */
+}
+
+.chart-wrapper {
+  width: 100%;
+  overflow: hidden;
+
+  /* NEW: take up all remaining vertical space in the card */
+  flex: 1;
+  min-height: 0; /* critical for flex children that need to shrink/scroll */
+  display: flex; /* optional, helps if the svg itself needs to stretch */
+}
+
+.chart-wrapper svg {
+  display: block;
+  width: 100%;
+  height: 100%; /* NEW: make svg fill the wrapper */
+}
