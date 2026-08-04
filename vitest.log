@@ -1,0 +1,50 @@
+
+ RUN  v4.1.10 /home/mohamed/Documents/mohamed/STAGES/PROJECTS/espace_partenaire_local/V2/espace_partenaire_local
+
+ ❯ src/TESTS/integration.spec.ts (4 tests | 4 failed) 47ms
+     × 1. Devrait voir le dashboard et charger les statistiques 29ms
+     × 2. Devrait créer une annonce, la sauvegarder en brouillon, la modifier, puis la soumettre 3ms
+     × 3. Devrait voir les leads et vérifier les interactions utilisateur 4ms
+     × 4. Devrait voir les statistiques de la plateforme 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/TESTS/integration.spec.ts > Scénario de Démonstration Complet - Intégration > 1. Devrait voir le dashboard et charger les statistiques
+ FAIL  src/TESTS/integration.spec.ts > Scénario de Démonstration Complet - Intégration > 2. Devrait créer une annonce, la sauvegarder en brouillon, la modifier, puis la soumettre
+ FAIL  src/TESTS/integration.spec.ts > Scénario de Démonstration Complet - Intégration > 3. Devrait voir les leads et vérifier les interactions utilisateur
+ FAIL  src/TESTS/integration.spec.ts > Scénario de Démonstration Complet - Intégration > 4. Devrait voir les statistiques de la plateforme
+Error: Need to call TestBed.initTestEnvironment() first
+ ❯ TestBedImpl.get compiler [as compiler] ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:739:12
+ ❯ compiler ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:594:9
+ ❯ configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:325:32
+ ❯ src/TESTS/integration.spec.ts:30:19
+     28|
+     29|   beforeEach(async () => {
+     30|     await TestBed.configureTestingModule({
+       |                   ^
+     31|       imports: [
+     32|         RouterTestingModule.withRoutes([
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+ FAIL  src/TESTS/integration.spec.ts > Scénario de Démonstration Complet - Intégration > 1. Devrait voir le dashboard et charger les statistiques
+ FAIL  src/TESTS/integration.spec.ts > Scénario de Démonstration Complet - Intégration > 2. Devrait créer une annonce, la sauvegarder en brouillon, la modifier, puis la soumettre
+ FAIL  src/TESTS/integration.spec.ts > Scénario de Démonstration Complet - Intégration > 3. Devrait voir les leads et vérifier les interactions utilisateur
+ FAIL  src/TESTS/integration.spec.ts > Scénario de Démonstration Complet - Intégration > 4. Devrait voir les statistiques de la plateforme
+TypeError: Cannot read properties of undefined (reading 'verify')
+ ❯ src/TESTS/integration.spec.ts:59:14
+     57|
+     58|   afterEach(() => {
+     59|     httpMock.verify();
+       |              ^
+     60|   });
+     61|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed (4)
+   Start at  06:45:05
+   Duration  34.26s (transform 709ms, setup 0ms, import 33.36s, tests 47ms, environment 0ms)
+
