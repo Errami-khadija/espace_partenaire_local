@@ -1,4 +1,4 @@
-import { Component, signal, computed } from '@angular/core';
+import { Component, signal, computed, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
@@ -16,20 +16,8 @@ import {
   LucideInfo,
 } from '@lucide/angular';
 
-interface ServiceVisibilityItem {
-  id: string;
-  name: string;
-  category: string;
-  isActive: boolean;
-  visibilityScore: number; // 0-100
-  impressions: number;
-  clicks: number;
-  ctr: number; // percentage
-  isBoosted: boolean;
-  radius: number; // km
-  keywords: string[];
-  targetType: 'B2C' | 'B2B' | 'Tous';
-}
+import { ServiceVisibilityService } from '../app/services/service-visibility';
+import { ServiceVisibilityItem } from '../app/models/service-visibility.model';
 
 @Component({
   selector: 'app-services-visibility',
@@ -52,80 +40,21 @@ interface ServiceVisibilityItem {
   templateUrl: './services-visibility.html',
   styleUrl: './services-visibility.css',
 })
-export class ServicesVisibility {
+export class ServicesVisibility implements OnInit {
   // Service list state using signals for reactive updates
-  protected readonly services = signal<ServiceVisibilityItem[]>([
-    {
-      id: 'srv-1',
-      name: 'Rénovation de Salle de Bain',
-      category: 'Plomberie & Travaux',
-      isActive: true,
-      visibilityScore: 92,
-      impressions: 14200,
-      clicks: 738,
-      ctr: 5.2,
-      isBoosted: true,
-      radius: 25,
-      keywords: ['salle de bain', 'douche italienne', 'plomberie', 'carrelage'],
-      targetType: 'B2C',
-    },
-    {
-      id: 'srv-2',
-      name: 'Dépannage Électrique Urgent',
-      category: 'Électricité',
-      isActive: true,
-      visibilityScore: 87,
-      impressions: 9800,
-      clicks: 470,
-      ctr: 4.8,
-      isBoosted: false,
-      radius: 15,
-      keywords: ['panne électricité', 'court-circuit', 'urgence électricien'],
-      targetType: 'Tous',
-    },
-    {
-      id: 'srv-3',
-      name: 'Pose de Parquet & Sols',
-      category: 'Menuiserie & Sols',
-      isActive: false,
-      visibilityScore: 45,
-      impressions: 2400,
-      clicks: 50,
-      ctr: 2.1,
-      isBoosted: false,
-      radius: 30,
-      keywords: ['parquet', 'sol stratifié', 'pose parquet', 'rénovation sol'],
-      targetType: 'B2C',
-    },
-    {
-      id: 'srv-4',
-      name: 'Peinture Intérieure & Enduits',
-      category: 'Peinture & Décoration',
-      isActive: true,
-      visibilityScore: 95,
-      impressions: 18500,
-      clicks: 1184,
-      ctr: 6.4,
-      isBoosted: true,
-      radius: 40,
-      keywords: ['peinture mur', 'peintre professionnel', 'enduit', 'déco salon'],
-      targetType: 'Tous',
-    },
-    {
-      id: 'srv-5',
-      name: 'Conseil & Planification 3D',
-      category: 'Décoration & Design',
-      isActive: true,
-      visibilityScore: 72,
-      impressions: 6100,
-      clicks: 213,
-      ctr: 3.5,
-      isBoosted: false,
-      radius: 50,
-      keywords: ['plan 3D', 'architecte intérieur', 'conseil déco', 'aménagement'],
-      targetType: 'B2B',
-    },
-  ]);
+  protected readonly services = signal<ServiceVisibilityItem[]>([]);
+  private serviceVisibilityService = inject(ServiceVisibilityService);
+
+  ngOnInit(): void {
+    this.loadServices();
+  }
+
+  loadServices(): void {
+    this.serviceVisibilityService.getAllServices().subscribe({
+      next: (data) => this.services.set(data),
+      error: (err) => console.error('Error loading services', err)
+    });
+  }
 
   // Search & Filter state
   protected readonly searchQuery = signal<string>('');
@@ -186,59 +115,52 @@ export class ServicesVisibility {
   // Toggle service status
   toggleServiceStatus(id: string, event: Event): void {
     event.stopPropagation();
-    this.services.update(list => 
-      list.map(s => {
-        if (s.id === id) {
-          const nextActive = !s.isActive;
-          // Dynamically adjust visibility score slightly when status changes
-          const nextScore = nextActive 
-            ? Math.min(100, s.visibilityScore + 15) 
-            : Math.max(10, s.visibilityScore - 15);
-          
-          Swal.fire({
-            title: nextActive ? 'Annonce Activée' : 'Annonce Désactivée',
-            text: `L'annonce "${s.name}" est désormais ${nextActive ? 'visible' : 'masquée'} pour vos clients.`,
-            icon: nextActive ? 'success' : 'info',
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 2500,
-            timerProgressBar: true,
-          });
+    const service = this.services().find(s => s.id === id);
+    if (!service) return;
 
-          return { ...s, isActive: nextActive, visibilityScore: nextScore };
-        }
-        return s;
-      })
-    );
+    const nextActive = !service.isActive;
+
+    this.serviceVisibilityService.toggleServiceStatus(id, nextActive).subscribe({
+      next: (updatedService) => {
+        this.services.update(list => list.map(s => s.id === id ? updatedService : s));
+        Swal.fire({
+          title: nextActive ? 'Annonce Activée' : 'Annonce Désactivée',
+          text: `L'annonce "${service.name}" est désormais ${nextActive ? 'visible' : 'masquée'} pour vos clients.`,
+          icon: nextActive ? 'success' : 'info',
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 2500,
+          timerProgressBar: true,
+        });
+      },
+      error: (err) => console.error('Error toggling status', err)
+    });
   }
 
   // Toggle Booster
   toggleBooster(id: string, event: Event): void {
     event.stopPropagation();
-    this.services.update(list => 
-      list.map(s => {
-        if (s.id === id) {
-          const nextBoost = !s.isBoosted;
-          const nextScore = nextBoost 
-            ? Math.min(100, s.visibilityScore + 20) 
-            : Math.max(10, s.visibilityScore - 20);
+    const service = this.services().find(s => s.id === id);
+    if (!service) return;
 
-          Swal.fire({
-            title: nextBoost ? 'Boost Premium Activé !' : 'Boost Désactivé',
-            text: nextBoost 
-              ? `Votre annonce "${s.name}" bénéficie d'une visibilité prioritaire (+50% d'impressions).`
-              : `Le booster de visibilité a été retiré pour "${s.name}".`,
-            icon: nextBoost ? 'success' : 'warning',
-            confirmButtonText: 'OK',
-            confirmButtonColor: '#4338ca'
-          });
+    const nextBoost = !service.isBoosted;
 
-          return { ...s, isBoosted: nextBoost, visibilityScore: nextScore };
-        }
-        return s;
-      })
-    );
+    this.serviceVisibilityService.toggleServiceBooster(id, nextBoost).subscribe({
+      next: (updatedService) => {
+        this.services.update(list => list.map(s => s.id === id ? updatedService : s));
+        Swal.fire({
+          title: nextBoost ? 'Boost Premium Activé !' : 'Boost Désactivé',
+          text: nextBoost 
+            ? `Votre annonce "${service.name}" bénéficie d'une visibilité prioritaire (+50% d'impressions).`
+            : `Le booster de visibilité a été retiré pour "${service.name}".`,
+          icon: nextBoost ? 'success' : 'warning',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#4338ca'
+        });
+      },
+      error: (err) => console.error('Error toggling booster', err)
+    });
   }
 
   // Open settings modal
@@ -258,35 +180,20 @@ export class ServicesVisibility {
     const edited = this.activeEditingService();
     if (!edited) return;
 
-    this.services.update(list => 
-      list.map(s => {
-        if (s.id === edited.id) {
-          // Adjust visibility score slightly based on settings (e.g. wider radius/keywords slightly increases score)
-          let finalScore = s.visibilityScore;
-          if (edited.radius !== s.radius || edited.keywords.length !== s.keywords.length) {
-            const keywordBonus = Math.min(10, edited.keywords.length * 2);
-            const radiusBonus = Math.min(10, Math.floor(edited.radius / 10));
-            finalScore = Math.min(100, 60 + keywordBonus + radiusBonus + (edited.isBoosted ? 20 : 0));
-          }
-
-          return { 
-            ...edited, 
-            visibilityScore: edited.isActive ? finalScore : Math.max(10, finalScore - 15) 
-          };
-        }
-        return s;
-      })
-    );
-
-    Swal.fire({
-      title: 'Configuration Enregistrée',
-      text: `Les paramètres de visibilité pour "${edited.name}" ont été mis à jour avec succès.`,
-      icon: 'success',
-      confirmButtonText: 'Fermer',
-      confirmButtonColor: '#4338ca'
+    this.serviceVisibilityService.updateService(edited.id, edited).subscribe({
+      next: (updatedService) => {
+        this.services.update(list => list.map(s => s.id === edited.id ? updatedService : s));
+        Swal.fire({
+          title: 'Configuration Enregistrée',
+          text: `Les paramètres de visibilité pour "${edited.name}" ont été mis à jour avec succès.`,
+          icon: 'success',
+          confirmButtonText: 'Fermer',
+          confirmButtonColor: '#4338ca'
+        });
+        this.closeSettings();
+      },
+      error: (err) => console.error('Error updating service settings', err)
     });
-
-    this.closeSettings();
   }
 
   // Add keyword chip
